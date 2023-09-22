@@ -4,10 +4,62 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
         <title>Icons</title>
-        <link href="style.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="design/Main.css" />
+        <script type="module" src="source/Main.js"></script>
     </head>
     <body>
-        Hello world
-        <script src="script.js"></script>
+        <section>
+            <div class="select-dialog backdrop" data-dialog="select">
+                <dialog open>
+                    <h2>Select a Project</h2>
+                    <p class="select-empty">Use the button bellow to add a new Project.</p>
+                    <ol class="select-list"></ol>
+                    <button class="btn btn-fill" data-action="open-add">Add Project</button>
+                    <a href="#" class="close" data-action="close-select"></a>
+                </dialog>
+            </div>
+    
+            <div class="edit-dialog backdrop" data-dialog="edit">
+                <dialog open>
+                    <h2>Edit Project</h2>
+                    <p>Name the Project and optionally import the icons from a json file.</p>
+                    <div class="field" data-field="name">
+                        <label>Name</label>
+                        <input type="text" name="name" />
+                        <div class="error" data-error="name">You must complete de project name.</div>
+                    </div>
+                    <div class="field file-input project-file" data-field="file">
+                        <section>
+                            <div>
+                                <label>Icons File</label>
+                                <div class="file-name"></div>
+                            </div>
+                            <div>
+                                <a href="#" class="close" data-action="remove-file"></a>
+                                <button class="btn" data-action="upload-file">Upload File</button>
+                            </div>
+                        </section>
+                        <div class="error" data-error="json">The file must be a valid JSON file.</div>
+                    </div>
+                    <div class="field project-position" data-field="position">
+                        <label>Position</label>
+                        <input type="number" name="position" />
+                    </div>
+                    <button class="btn btn-fill dialog-btn" data-action="edit-project"></button>
+                    <button class="btn" data-action="close-edit">Cancel</button>
+                    <a href="#" class="close" data-action="close-edit"></a>
+                </dialog>
+            </div>
+    
+            <div class="backdrop" data-dialog="delete">
+                <dialog open>
+                    <h2>Delete Project</h2>
+                    <p class="select-empty">Do you really want to delete the selected Project?</p>
+                    <button class="btn btn-fill" data-action="delete-project">Delete</button>
+                    <button class="btn" data-action="close-delete">Cancel</button>
+                    <a href="#" class="close" data-action="close-delete"></a>
+                </dialog>
+            </div>
+        </section>
     </body>
 </html>

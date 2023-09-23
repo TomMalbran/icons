@@ -464,3 +464,14 @@ input[role="switch"]:disabled {
 .close:active:after {
     transform: rotate(-35deg);
 }
+
+
+
+/**
+ * Media queries
+ */
+@media (max-width: 600px) {
+    main {
+        padding: var(--main-padding);
+    }
+}

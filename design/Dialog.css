@@ -19,7 +19,7 @@ dialog {
     width: 400px;
     max-width: calc(100% - 24px);
     margin: 0;
-    padding: 32px;
+    padding: calc(var(--main-padding) * 3) calc(var(--main-padding) * 2);
     transform: translate(-50%, -50%);
     background-color: var(--card-color);
     border-radius: var(--border-radius);
@@ -31,7 +31,8 @@ dialog {
 dialog h2 {
     margin-top: 0;
     font-family: var(--title-font);
-    font-size: 28px;
+    font-size: 24px;
+    font-weight: normal;
 }
 dialog > .close {
     --close-color: var(--main-color);
@@ -40,8 +41,8 @@ dialog > .close {
     --close-height: 2px;
 
     position: absolute;
-    top: 24px;
-    right: 24px;
+    top: calc(var(--main-padding) * 2);
+    right: calc(var(--main-padding) * 2);
 }
 
 
@@ -56,6 +57,7 @@ dialog > .close {
     list-style: none;
     counter-reset: counter;
     padding: 0;
+    margin-bottom: calc(var(--main-padding) * 2);
     border-top: 1px solid var(--border-color);
 }
 .select-list:empty {

@@ -206,7 +206,7 @@ export default class Storage {
      * @returns {String}
      */
     getMode() {
-        return this.getString("mode") || "dark";
+        return this.getString("mode") || "light";
     }
     
     /**

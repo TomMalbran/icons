@@ -198,4 +198,30 @@ export default class Storage {
             this.setNumber("currentID", 0);
         }
     }
+
+
+
+    /**
+     * Returns the Mode
+     * @returns {String}
+     */
+    getMode() {
+        return this.getString("mode") || "dark";
+    }
+    
+    /**
+     * Sets the Dark Mode
+     * @returns {Void}
+     */
+    setDarkMode() {
+        this.setString("mode", "dark");
+    }
+
+    /**
+     * Sets the Light Mode
+     * @returns {Void}
+     */
+    setLightMode() {
+        this.setString("mode", "light");
+    }
 }

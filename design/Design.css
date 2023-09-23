@@ -8,8 +8,8 @@
     left: 0;
     right: 0;
     bottom: 0;
+    background-color: var(--backdrop-color);
     z-index: var(--z-dialog);
-    background-color: rgba(232, 232, 237, 0.8);
 }
 dialog {
     box-sizing: border-box;
@@ -21,16 +21,15 @@ dialog {
     margin: 0;
     padding: 32px;
     transform: translate(-50%, -50%);
-    background-color: white;
+    background-color: var(--card-color);
     border-radius: var(--border-radius);
     border: none;
-    box-shadow: 0 11px 34px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--box-shadow);
     font-size: 16px;
     text-align: center;
 }
 dialog h2 {
     margin-top: 0;
-    color: var(--main-color);
     font-family: var(--title-font);
     font-size: 28px;
 }
@@ -57,7 +56,7 @@ dialog > .close {
     list-style: none;
     counter-reset: counter;
     padding: 0;
-    border-top: 1px solid rgb(209, 209, 209);
+    border-top: 1px solid var(--border-color);
 }
 .select-list:empty {
     display: none;
@@ -68,23 +67,22 @@ dialog > .close {
     align-items: center;
     counter-increment: counter;
     padding: 8px 16px;
-    border-bottom: 1px solid rgb(209, 209, 209);
+    border-bottom: 1px solid var(--border-color);
     text-align: left;
     cursor: pointer;
     transition: background-color 0.2s;
 }
 .select-list li:hover {
-    background-color: rgb(232, 232, 232);
+    background-color: var(--light-color);
 }
 
 .select-list .select-name::before {
     content: counter(counter) ".";
     margin-right: 8px;
-    color: var(--main-color);
     font-family: var(--title-font);
     font-weight: bold;
-    font-size: 18px;
+    font-size: 20px;
 }
 .select-list .selected {
-    background-color: rgb(238, 238, 238);
+    background-color: var(--lighter-color);
 }

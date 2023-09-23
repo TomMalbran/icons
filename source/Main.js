@@ -1,5 +1,7 @@
 import Selection from "./Selection.js";
 import Storage   from "./Storage.js";
+import Canvas    from "./Canvas.js";
+import Project   from "./Project.js";
 import Utils     from "./Utils.js";
 
 
@@ -8,6 +10,9 @@ let selection = null;
 
 /** @type {Storage} */
 let storage   = null;
+
+/** @type {Canvas} */
+let canvas    = null;
 
 /** @type {Project} */
 let project   = null;
@@ -21,7 +26,9 @@ let project   = null;
 function main() {
     selection = new Selection();
     storage   = new Storage();
+    canvas    = new Canvas();
 
+    canvas.restoreMode(storage.getMode());
     if (storage.hasProject) {
         const data = storage.getProject();
         setProject(data);
@@ -36,14 +43,26 @@ function main() {
  * @returns {Void}
  */
 function setProject(data) {
+    project = new Project(data);
+    canvas.setProject(project);
 }
 
 /**
  * Selects the given Project
  * @param {Number} projectID
- * @returns {Void}
+ * @returns {Boolean}
  */
 function selectProject(projectID) {
+    const data = storage.getProject(projectID);
+    if (!data) {
+        return false;
+    }
+    if (project) {
+        // TODO: Remove project
+    }
+    storage.selectProject(projectID);
+    setProject(data);
+    return true;
 }
 
 /** 
@@ -69,7 +88,7 @@ async function editProject() {
  */
 function deleteProject(projectID) {
     if (project && project.projectID === projectID) {
-        // TODO: Delete project
+        // TODO: Remove project
     }
     storage.removeProject(projectID);
     selection.open(storage.getProjects(), storage.hasProject);
@@ -130,6 +149,16 @@ document.addEventListener("click", (e) => {
         break;
     case "delete-project":
         deleteProject(selection.projectID);
+        break;
+
+    // Light-Dark Modes
+    case "light-mode":
+        storage.setLightMode();
+        canvas.setLightMode();
+        break;
+    case "dark-mode":
+        storage.setDarkMode();
+        canvas.setDarkMode();
         break;
     }
 

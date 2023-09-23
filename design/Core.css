@@ -2,19 +2,53 @@
  * Properties
  */
 :root {
-    --main-color: #061e2e;
-    --light-color: rgb(118, 130, 139);
-    --border-color: rgb(224, 224, 224);
     --disabled-color: rgb(94, 109, 120);
-    --input-color: rgb(189, 189, 189);
-    --background-color: #f6f6f9;
-    --box-shadow: 2px 2px 9px rgb(209, 209, 209);
-
+    
     --main-font: Lato, "Helvetica Nueue", Helvetica, Arial, sans-serif;
     --title-font: Means, Georgia, serif;
 
+    --main-gap: 16px;
+    --main-padding: 12px;
     --border-radius: 24px;
     --input-radius: 4px;
+
+    --actions-width: calc(var(--main-padding) * 3 + 32px * 3);
+
+    --z-dialog: 100;
+}
+body {
+    --box-shadow: 0 28px 44px var(--light-color);
+}
+
+.light-mode {
+    --black-color: black;
+    --white-color: white;
+    --main-color: rgb(14, 16, 18);
+    --label-color: rgb(118, 130, 139);
+    --background-color: #f6f6f9;
+    --card-color: white;
+    --button-color: rgb(14, 16, 18);
+    --input-color: rgb(189, 189, 189);
+    --lighter-color: rgba(132, 139, 200, 0.09);
+    --light-color: rgba(132, 139, 200, 0.18);
+    --dark-color: rgba(132, 139, 200, 0.24);
+    --backdrop-color: rgba(232, 232, 237, 0.8);
+    --border-color: rgba(132, 139, 200, 0.18);
+}
+.dark-mode {
+    --black-color: white;
+    --white-color: black;
+    --main-color: rgb(237, 239, 253);
+    --label-color: rgba(227, 229, 243);
+    --background-color: #181a1e;
+    --card-color: #202528;
+    --button-color: rgb(14, 16, 18);
+    --input-color: rgb(0, 0, 0, 0.8);
+    --lighter-color: rgba(0, 0, 0, 0.2);
+    --light-color: rgba(0, 0, 0, 0.3);
+    --dark-color: rgba(0, 0, 0, 0.2);
+    --backdrop-color: rgba(0, 0, 0, 0.8);
+    --border-color: rgba(0, 0, 0, 0.4);
 }
 
 
@@ -55,10 +89,61 @@ html, body {
     overflow: hidden;
     background-color: var(--background-color);
 }
-html, body, input {
-    color: black;
+body, input, dialog {
+    color: var(--main-color);
     font-size: 14px;
     font-family: var(--main-font);
+}
+main {
+    padding: calc(var(--main-padding) * 2);
+}
+svg {
+    fill: var(--main-color);
+}
+
+
+
+/**
+ * Cards
+ */
+.card {
+    box-sizing: border-box;
+    display: flex;
+    gap: var(--main-gap);
+    padding: var(--main-padding);
+    background-color: var(--card-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    font-size: 16px;
+    transition: all 300ms ease;
+}
+.card-action,
+.card[data-action] {
+    cursor: pointer;
+}
+.card-action:hover,
+.card[data-action]:hover {
+    box-shadow: none;
+}
+
+
+
+/**
+ * Icons
+ */
+.icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 300ms ease;
+}
+.icon:hover {
+    background-color: var(--light-color);
 }
 
 
@@ -69,28 +154,28 @@ html, body, input {
 .btn {
     display: inline-block;
     padding: 8px 16px;
-    background-color: white;
-    border: 1px solid var(--main-color);
+    background-color: transparent;
+    border: 1px solid var(--button-color);
     border-radius: 9999px;
     color: var(--main-color);
     font-family: var(--main-font);
     font-size: 14px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 300ms;
 }
 .btn:hover {
     color: white;
-    background-color: var(--main-color);
+    background-color: var(--button-color);
 }
 
 .btn-fill {
     color: white;
-    background-color: var(--main-color);
+    background-color: var(--button-color);
 }
 .btn-fill:hover {
     color: var(--main-color);
-    background-color: white;
+    background-color: transparent;
 }
 
 .btn + .btn {
@@ -127,7 +212,7 @@ input:focus {
     margin: 0;
     font-size: 11px;
     line-height: 1;
-    color: var(--light-color);
+    color: var(--label-color);
 }
 .field > input[type="text"],
 .field > input[type="number"] {
@@ -145,6 +230,7 @@ input:focus {
     color: rgb(188, 28, 72);
     font-size: 12px;
 }
+
 
 
 /**
@@ -190,7 +276,7 @@ input:focus {
 .checkbox-input {
     display: flex;
     align-items: center;
-    color: black;
+    color: var(--main-color);
     font-size: 14px;
 }
 .checkbox-input input[type="checkbox"] {
@@ -217,7 +303,6 @@ input:focus {
     align-items: center;
     justify-content: center;
     font-size: 11px;
-    color: var(--primary-color);
     background-color: var(--main-color);
     color: white;
     border-radius: var(--input-radius);

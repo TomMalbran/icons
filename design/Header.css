@@ -1,0 +1,95 @@
+/**
+ * The header
+ */
+header {
+    display: flex;
+    gap: var(--main-gap);
+}
+.title {
+    align-items: center;
+    font-family: var(--title-font);
+    padding-right: calc(2 * var(--main-padding));
+}
+.title h1 {
+    margin: 0;
+}
+.search {
+    flex-grow: 2;
+    align-items: center;
+    gap: 0;
+    padding-left: calc(2 * var(--main-padding));
+}
+.search input[type="text"] {
+    flex-grow: 2;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+
+
+/**
+ * The actions
+ */
+.actions {
+    width: var(--actions-width);
+    align-items: center;
+    gap: calc(var(--main-gap) / 2);
+}
+
+.light-dark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    gap: 6px;
+    background-color: var(--light-color);
+    border-radius: 9999px;
+    transition: all 300ms ease;
+}
+.light-dark:hover {
+    background-color: var(--dark-color);
+}
+.light-dark > div {
+    display: flex;    
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.light-dark .selected {
+    background-color: var(--black-color);
+}
+.light-dark .selected svg {
+    fill: var(--white-color);
+}
+
+
+
+/**
+ * Media queries
+ */
+@media (max-width: 600px) {
+    header {
+        display: grid;
+        grid-template-columns: 1fr var(--actions-width);
+        grid-template-areas: "title actions" "search search";
+    }
+    .title {
+        grid-area: title;
+    }
+    .search {
+        position: relative;
+        grid-area: search;
+        z-index: 1;
+    }
+    .actions {
+        grid-area: actions;
+    }
+}

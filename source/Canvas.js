@@ -6,28 +6,28 @@ import Project from "./Project.js";
  * The Canvas
  */
 export default class Canvas {
+
+    /** @type {HTMLElement} */
+    #body;
+    /** @type {HTMLElement} */
+    #main;
+    /** @type {HTMLElement} */
+    #title;
+    /** @type {HTMLElement} */
+    #light;
+    /** @type {HTMLElement} */
+    #dark;
+
     
     /**
      * Canvas constructor
      */
     constructor() {
-        /** @type {Project} */
-        this.project = null;
-
-        /** @type {HTMLElement} */
-        this.body = document.querySelector("body");
-
-        /** @type {HTMLElement} */
-        this.main = document.querySelector("main");
-
-        /** @type {HTMLElement} */
-        this.title = document.querySelector("header h1");
-
-        /** @type {HTMLElement} */
-        this.light = document.querySelector(".light");
-        
-        /** @type {HTMLElement} */
-        this.dark = document.querySelector(".dark");
+        this.#body  = document.querySelector("body");
+        this.#main  = document.querySelector("main");
+        this.#title = document.querySelector("header h1");
+        this.#light = document.querySelector(".light");
+        this.#dark  = document.querySelector(".dark");
     }
 
     /**
@@ -36,10 +36,8 @@ export default class Canvas {
      * @returns {Void}
      */
     setProject(project) {
-        this.project = project;
-
-        this.main.style.display = "block";
-        this.title.innerHTML = project.name;
+        this.#main.style.display = "flex";
+        this.#title.innerHTML = project.name;
     }
 
 
@@ -62,10 +60,10 @@ export default class Canvas {
      * @returns {Void}
      */
     setLightMode() {
-        this.body.classList.add("light-mode");
-        this.body.classList.remove("dark-mode");
-        this.light.classList.add("selected");
-        this.dark.classList.remove("selected");
+        this.#body.classList.add("light-mode");
+        this.#body.classList.remove("dark-mode");
+        this.#light.classList.add("selected");
+        this.#dark.classList.remove("selected");
     }
 
     /**
@@ -73,9 +71,9 @@ export default class Canvas {
      * @returns {Void}
      */
     setDarkMode() {
-        this.body.classList.remove("light-mode");
-        this.body.classList.add("dark-mode");
-        this.light.classList.remove("selected");
-        this.dark.classList.add("selected");
+        this.#body.classList.remove("light-mode");
+        this.#body.classList.add("dark-mode");
+        this.#light.classList.remove("selected");
+        this.#dark.classList.add("selected");
     }
 }

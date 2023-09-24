@@ -95,35 +95,16 @@ body, input, dialog {
     font-family: var(--main-font);
 }
 main {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--main-gap) * 2);
+    height: 100%;
     padding: calc(var(--main-padding) * 2);
+    overflow: auto;
 }
 svg {
     fill: var(--main-color);
-}
-
-
-
-/**
- * Cards
- */
-.card {
-    box-sizing: border-box;
-    display: flex;
-    gap: var(--main-gap);
-    padding: var(--main-padding);
-    background-color: var(--card-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    font-size: 16px;
-    transition: all 300ms ease;
-}
-.card-action,
-.card[data-action] {
-    cursor: pointer;
-}
-.card-action:hover,
-.card[data-action]:hover {
-    box-shadow: none;
 }
 
 

@@ -7,24 +7,36 @@ import Dialog from "./Dialog.js";
  */
 export default class Selection {
 
+    /** @type {Dialog} */
+    #selectDialog;
+
+    /** @type {HTMLElement} */
+    #selectEmpty;
+
+    /** @type {HTMLElement} */
+    #selectList;
+
+    /** @type {Dialog} */
+    #editDialog;
+
+    /** @type {Dialog} */
+    #deleteDialog;
+
+    
     /**
      * Selection constructor
      */
     constructor() {
         // Selection
-        this.selectDialog = new Dialog("select");
-        /** @type {HTMLElement} */
-        this.selectEmpty  = document.querySelector(".select-empty");
-        /** @type {HTMLElement} */
-        this.selectList   = document.querySelector(".select-list");
+        this.#selectDialog = new Dialog("select");
+        this.#selectEmpty  = document.querySelector(".select-empty");
+        this.#selectList   = document.querySelector(".select-list");
 
         // Add/Edit
-        this.editDialog   = new Dialog("edit");
-        /** @type {NodeListOf<HTMLElement>} */
-        this.fileField    = document.querySelector(".project-file");
+        this.#editDialog   = new Dialog("edit");
 
         // Delete
-        this.deleteDialog = new Dialog("delete");
+        this.#deleteDialog = new Dialog("delete");
     }
 
     /**
@@ -34,10 +46,10 @@ export default class Selection {
      * @returns {Void}
      */
     open(projects, hasProject) {
-        this.selectDialog.open();
-        this.selectDialog.toggleClose(hasProject);
-        this.selectEmpty.style.display = projects.length ? "none" : "block";
-        this.selectList.innerHTML = "";
+        this.#selectDialog.open();
+        this.#selectDialog.toggleClose(hasProject);
+        this.#selectEmpty.style.display = projects.length ? "none" : "block";
+        this.#selectList.innerHTML = "";
 
         for (const project of projects) {
             const li = document.createElement("li");
@@ -69,7 +81,7 @@ export default class Selection {
             deleteBtn.dataset.project = project.projectID;
             buttons.appendChild(deleteBtn);
 
-            this.selectList.appendChild(li);
+            this.#selectList.appendChild(li);
         }
     }
 
@@ -78,7 +90,7 @@ export default class Selection {
      * @returns {Void}
      */
     close() {
-        this.selectDialog.close();
+        this.#selectDialog.close();
     }
 
 
@@ -94,12 +106,12 @@ export default class Selection {
         this.file    = null;
         this.path    = "";
 
-        this.editDialog.open();
-        this.editDialog.setTitle(isEdit  ? "Edit the Project" : "Add a Project");
-        this.editDialog.setButton(isEdit ? "Edit" : "Add");
+        this.#editDialog.open();
+        this.#editDialog.setTitle(isEdit  ? "Edit the Project" : "Add a Project");
+        this.#editDialog.setButton(isEdit ? "Edit" : "Add");
 
-        this.editDialog.setInput("name",     isEdit ? data.name     : "");
-        this.editDialog.setInput("position", isEdit ? data.position : "0");
+        this.#editDialog.setInput("name",     isEdit ? data.name     : "");
+        this.#editDialog.setInput("position", isEdit ? data.position : "0");
     }
 
     /**
@@ -107,7 +119,7 @@ export default class Selection {
      * @returns {Void}
      */
     closeEdit() {
-        this.editDialog.close();
+        this.#editDialog.close();
     }
 
     /**
@@ -115,7 +127,7 @@ export default class Selection {
      * @returns {Void}
      */
     selectFile() {
-        this.editDialog.selectFile("file", (file) => {
+        this.#editDialog.selectFile("file", (file) => {
             this.file = file;
             this.path = file.name;
         });
@@ -129,7 +141,7 @@ export default class Selection {
         this.files = null;
         this.path  = "";
         this.data.icons = null;
-        this.editDialog.setInput("name", "");
+        this.#editDialog.setInput("name", "");
     }
 
     /**
@@ -138,13 +150,13 @@ export default class Selection {
      */
     editProject() {
         return new Promise((resolve) => {
-            this.data.name     = this.editDialog.getInput("name");
-            this.data.position = this.editDialog.getInput("position");
+            this.data.name     = this.#editDialog.getInput("name");
+            this.data.position = this.#editDialog.getInput("position");
             this.data.icons    = {};
 
-            this.editDialog.hideErrors();
+            this.#editDialog.hideErrors();
             if (!this.data.name) {
-                this.editDialog.showError("name");
+                this.#editDialog.showError("name");
             }
             if (this.file) {
                 const reader = new FileReader();
@@ -154,12 +166,12 @@ export default class Selection {
                     try {
                         this.data.icons = JSON.parse(text);
                     } catch {
-                        this.editDialog.showError("json");
+                        this.#editDialog.showError("json");
                     }
                 };
             }
 
-            if (this.editDialog.hasError) {
+            if (this.#editDialog.hasError) {
                 resolve();
                 return;
             }
@@ -176,7 +188,7 @@ export default class Selection {
      */
     openDelete(projectID) {
         this.projectID = projectID;
-        this.deleteDialog.open();
+        this.#deleteDialog.open();
     }
 
     /**
@@ -185,6 +197,6 @@ export default class Selection {
      */
     closeDelete() {
         this.projectID = 0;
-        this.deleteDialog.close();
+        this.#deleteDialog.close();
     }
 }

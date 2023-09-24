@@ -3,13 +3,18 @@
  */
 export default class Storage {
 
+    #currentID = 0;
+    #nextID    = 1;
+    #projects  = [];
+
+
     /**
      * Storage constructor
      */
     constructor() {
-        this.currentID = this.getNumber("currentID", 0);
-        this.nextID    = this.getNumber("nextID", 1);
-        this.projects  = this.getData("projects") || [];
+        this.#currentID = this.getNumber("currentID", 0);
+        this.#nextID    = this.getNumber("nextID", 1);
+        this.#projects  = this.getData("projects") || [];
     }
 
     /**
@@ -96,7 +101,7 @@ export default class Storage {
      * @returns {Boolean}
      */
     get hasProject() {
-        return this.currentID > 0 && this.hasItem(this.currentID, "name");
+        return this.#currentID > 0 && this.hasItem(this.#currentID, "name");
     }
 
     /**
@@ -105,16 +110,16 @@ export default class Storage {
      */
     getProjects() {
         const result = [];
-        if (!this.projects.length) {
+        if (!this.#projects.length) {
             return result;
         }
         
-        for (const [ index, projectID ] of this.projects.entries()) {
+        for (const [ index, projectID ] of this.#projects.entries()) {
             const name = this.getString(projectID, "name");
             result.push({
                 projectID, name,
                 position   : index + 1,
-                isSelected : projectID === this.currentID,
+                isSelected : projectID === this.#currentID,
             });
         }
         return result;
@@ -125,8 +130,8 @@ export default class Storage {
      * @param {Number=} projectID
      * @returns {Object}
      */
-    getProject(projectID = this.currentID) {
-        const position = this.projects.findIndex((id) => id === projectID) + 1;
+    getProject(projectID = this.#currentID) {
+        const position = this.#projects.findIndex((id) => id === projectID) + 1;
         if (position <= 0) {
             return null;
         }
@@ -143,8 +148,8 @@ export default class Storage {
      * @returns {Void}
      */
     selectProject(projectID) {
-        this.currentID = projectID;
-        this.setNumber("currentID", this.currentID);
+        this.#currentID = projectID;
+        this.setNumber("currentID", this.#currentID);
     }
 
     /**
@@ -157,23 +162,23 @@ export default class Storage {
 
         // Update the next ID if this is a new Project
         if (!isEdit) {
-            data.projectID = this.nextID;
-            this.nextID += 1;
-            this.setNumber("nextID", this.nextID);
+            data.projectID = this.#nextID;
+            this.#nextID += 1;
+            this.setNumber("nextID", this.#nextID);
         }
 
         // Save the Project data
         this.setString(data.projectID, "name", data.name);
 
         // Save the order
-        const index = Math.min(Math.max(data.position - 1, 0), this.projects.length);
+        const index = Math.min(Math.max(data.position - 1, 0), this.#projects.length);
         if (!isEdit) {
-            this.projects.push(data.projectID);
-        } else if (this.projects[index] !== data.projectID) {
-            this.projects = this.projects.filter((id) => id !== data.projectID);
-            this.projects.splice(index, 0, data.projectID);
+            this.#projects.push(data.projectID);
+        } else if (this.#projects[index] !== data.projectID) {
+            this.#projects = this.#projects.filter((id) => id !== data.projectID);
+            this.#projects.splice(index, 0, data.projectID);
         }
-        this.setData("projects", this.projects);
+        this.setData("projects", this.#projects);
     }
 
     /**
@@ -190,11 +195,11 @@ export default class Storage {
         this.removeItem(projectID, "name");
 
         // Save the order
-        this.projects = this.projects.filter((id) => id !== projectID);
-        this.setData("projects", this.projects);
+        this.#projects = this.#projects.filter((id) => id !== projectID);
+        this.setData("projects", this.#projects);
 
         // Remove as the current Project
-        if (this.currentID === projectID) {
+        if (this.#currentID === projectID) {
             this.setNumber("currentID", 0);
         }
     }

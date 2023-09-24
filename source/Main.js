@@ -1,6 +1,7 @@
 import Selection from "./Selection.js";
 import Storage   from "./Storage.js";
 import Canvas    from "./Canvas.js";
+import Search    from "./Search.js";
 import Project   from "./Project.js";
 import Utils     from "./Utils.js";
 
@@ -13,6 +14,9 @@ let storage   = null;
 
 /** @type {Canvas} */
 let canvas    = null;
+
+/** @type {Search} */
+let search    = null;
 
 /** @type {Project} */
 let project   = null;
@@ -27,6 +31,7 @@ function main() {
     selection = new Selection();
     storage   = new Storage();
     canvas    = new Canvas();
+    search    = new Search();
 
     canvas.restoreMode(storage.getMode());
     if (storage.hasProject) {
@@ -151,6 +156,14 @@ document.addEventListener("click", (e) => {
         deleteProject(selection.projectID);
         break;
 
+    // Search
+    case "search-icon":
+        search.search();
+        break;
+    case "clear-search":
+        search.clear();
+        break;
+
     // Light-Dark Modes
     case "light-mode":
         storage.setLightMode();
@@ -164,6 +177,15 @@ document.addEventListener("click", (e) => {
 
     if (action && !dontStop) {
         e.preventDefault();
+    }
+});
+
+/**
+ * The Search Event Handler
+ */
+document.querySelector(".search input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        search.search();
     }
 });
 

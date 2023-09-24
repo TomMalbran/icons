@@ -17,6 +17,11 @@ header {
     font-size: 28px;
     font-weight: normal;
 }
+
+
+/**
+ * The search
+ */
 .search {
     flex-grow: 2;
     align-items: center;
@@ -32,6 +37,9 @@ header {
     border: none;
     border-radius: 0;
     background-color: transparent;
+}
+.clear-search {
+    display: none;
 }
 
 

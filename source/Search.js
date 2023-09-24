@@ -60,7 +60,7 @@ export default class Search {
     async fetchData() {
         if (this.#withTags) {
             // Try to get the data from: http://fonts.google.com/metadata/icons?incomplete=1&key=material_symbols
-            const response = await fetch("../data/icons.json");
+            const response = await fetch("data/icons.json");
             const result   = await response.json();
             this.#data = result;            
         } else {

@@ -3,27 +3,50 @@
  */
 export default class Dialog {
 
+    #isOpen   = false;
+    #hasError = false;
+    
+    /** @type {HTMLElement} */
+    #container;
+
+    
     /**
      * The Dialog constructor
      * @param {String} name
      */
     constructor(name) {
-        /** @type {HTMLElement} */
-        this.container = document.querySelector(`[data-dialog="${name}"]`);
-        this.isOpen    = false;
+        this.#container = document.querySelector(`[data-dialog="${name}"]`);
     }
 
+    /**
+     * Returns true if the Dialog is Open
+     * @returns {Boolean}
+     */
+    get isOpen() {
+        return this.#isOpen;
+    }
+
+    /**
+     * Returns true if the Dialog has Error
+     * @returns {Boolean}
+     */
+    get hasError() {
+        return this.#hasError;
+    }
+
+
+    
     /**
      * Opens the Dialog
      * @returns {Void}
      */
     open() {
-        this.isOpen = true;
-        this.container.style.display = "block";
+        this.#isOpen = true;
+        this.#container.style.display = "block";
         this.hideErrors();
 
         /** @type {HTMLInputElement} */
-        const input = this.container.querySelector("[data-field=name] input");
+        const input = this.#container.querySelector("[data-field=name] input");
         if (input) {
             input.focus();
         }
@@ -34,8 +57,8 @@ export default class Dialog {
      * @returns {Void}
      */
     close() {
-        this.isOpen = false;
-        this.container.style.display = "none";
+        this.#isOpen = false;
+        this.#container.style.display = "none";
         this.hideErrors();
     }
 
@@ -44,9 +67,10 @@ export default class Dialog {
     /**
      * Toggles the Close X
      * @param {Boolean} show
+     * @returns {Void}
      */
     toggleClose(show) {
-        const element = this.container.querySelector(".close");
+        const element = this.#container.querySelector(".close");
         if (!element) {
             return;
         }
@@ -59,21 +83,39 @@ export default class Dialog {
     
     /**
      * Set the Dialog title
+     * @param {String} text
      * @returns {Void}
      */
     setTitle(text) {
-        const element = this.container.querySelector("h2");
+        const element = this.#container.querySelector("h2");
         if (element) {
             element.innerHTML = text;
         }
     }
 
     /**
+     * Set the content of a Dialog item
+     * @param {String} selector
+     * @param {String} content
+     * @returns {Void}
+     */ 
+    setContent(selector, content) {
+        if (!selector) {
+            return;
+        }
+        const element = this.#container.querySelector(selector);
+        if (element) {
+            element.innerHTML = content;
+        }
+    }
+
+    /**
      * Set the Dialog button
+     * @param {String} text
      * @returns {Void}
      */
     setButton(text) {
-        const element = this.container.querySelector(".dialog-btn");
+        const element = this.#container.querySelector(".dialog-btn");
         if (element) {
             element.innerHTML = text;
         }
@@ -86,7 +128,7 @@ export default class Dialog {
      */
     getInput(name) {
         /** @type {HTMLInputElement} */
-        const input = this.container.querySelector(`[data-field=${name}] input`);
+        const input = this.#container.querySelector(`[data-field=${name}] input`);
         if (input.type === "checkbox") {
             return input.checked;
         }
@@ -100,7 +142,7 @@ export default class Dialog {
      * @returns {Void}
      */
     setInput(name, value) {
-        const element = this.container.querySelector(`[data-field=${name}]`);
+        const element = this.#container.querySelector(`[data-field=${name}]`);
         if (!element) {
             return;
         }
@@ -142,10 +184,10 @@ export default class Dialog {
      * @returns {Void}
      */
     showError(error, message = null) {
-        this.hasError = true;
+        this.#hasError = true;
 
         /** @type {HTMLElement} */
-        const element = this.container.querySelector(`[data-error=${error}]`);
+        const element = this.#container.querySelector(`[data-error=${error}]`);
         if (element) {
             element.style.display = "block";
             if (message) {
@@ -159,8 +201,8 @@ export default class Dialog {
      * @returns {Void}
      */
     hideErrors() {
-        this.hasError = false;
-        const errors = this.container.querySelectorAll(".error");
+        this.#hasError = false;
+        const errors = this.#container.querySelectorAll(".error");
         // @ts-ignore
         for (const error of errors) {
             error.style.display = "none";

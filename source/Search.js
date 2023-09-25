@@ -1,10 +1,16 @@
+import Icon from "./Icon.js";
+
+
+
 /**
  * The Search
  */
 export default class Search {
     
     #withTags = true;
-    #data     = null;
+
+    /** @type {Object.<String, Icon>} */
+    #data = {};
     
     /** @type {HTMLInputElement} */
     #input;
@@ -24,8 +30,8 @@ export default class Search {
     constructor() {        
         this.#input   = document.querySelector(".search input");
         this.#results = document.querySelector(".results");
-        this.#list    = document.querySelector(".results ol");
-        this.#empty   = document.querySelector(".results-empty");
+        this.#list    = document.querySelector(".results .icons");
+        this.#empty   = document.querySelector(".results .empty");
         this.#clear   = document.querySelector(".clear-search");        
     }
 
@@ -38,6 +44,14 @@ export default class Search {
     }
 
     /**
+     * Returns the icon with the given Name
+     * @returns {Icon}
+     */
+    getIcon(name) {
+        return this.#data[name];
+    }
+
+    /**
      * Searches new Icons
      * @returns {Promise}
      */
@@ -46,7 +60,7 @@ export default class Search {
         if (!text) {
             return;
         }
-        if (!this.#data) {
+        if (!this.#data.length) {
             await this.fetchData();
         }
         const icons = this.findIcons(text);
@@ -62,39 +76,35 @@ export default class Search {
             // Try to get the data from: http://fonts.google.com/metadata/icons?incomplete=1&key=material_symbols
             const response = await fetch("data/icons.json");
             const result   = await response.json();
-            this.#data = result;            
+            for (const icon of result) {
+                if (!this.#data[icon.name]) {
+                    this.#data[icon.name] = new Icon(icon.name, icon.category, icon.tags);                   
+                }
+            }        
         } else {
             const response = await fetch("https://raw.githubusercontent.com/google/material-design-icons/master/update/current_versions.json");
             const result   = await response.json();
-            this.#data = Object.keys(result);                
+            for (const icon of Object.keys(result)) {
+                const [ category, name ] = icon.split("::");
+                if (!this.#data[name]) {
+                    this.#data[name] = new Icon(name, category);
+                }
+            }
         }
     }
 
     /** 
      * Finds the icons
-     * @param {String}
-     * @returns {String[]}
+     * @param {String} text
+     * @returns {Icon[]}
      */
     findIcons(text) {
         const search = text.toLowerCase();
         const result = [];
-        
-        for (const icon of this.#data) {
-            if (this.#withTags) {
-                for (const tag of icon.tags) {
-                    if (result.includes(icon.name)) {
-                        continue;
-                    }
-                    if (tag.includes(search)) {
-                        result.push(icon.name);
-                        break;
-                    }
-                }
-            } else {
-                const name = icon.split("::")[1];
-                if (!result.includes(name) && name.includes(search)) {
-                    result.push(name);
-                }
+
+        for (const icon of Object.values(this.#data)) {
+            if (icon.includes(search)) {
+                result.push(icon);
             }
         }
         return result;
@@ -102,35 +112,22 @@ export default class Search {
 
     /**
      * Shows the Results
-     * @param {String[]} icons
+     * @param {Icon[]} icons
      * @returns {Boolean}
      */
     showIcons(icons) {
-        this.#results.style.display = "block";
+        this.#results.style.display = "flex";
         this.#clear.style.display = "flex";
+        this.#empty.style.display = "none";
         this.#list.innerHTML = "";
 
         if (!icons.length) {
             this.#empty.style.display = "block";
             return false;
         }
-        this.#empty.style.display = "none";
         
         for (const icon of icons) {
-            const li = document.createElement("li");
-            li.dataset.action = "select-icon";
-            li.dataset.icon   = icon;
-
-            const item = document.createElement("span");
-            item.className = "material-symbols-outlined";
-            item.innerHTML = icon;
-            li.appendChild(item);
-
-            const label = document.createElement("span");
-            label.innerHTML = icon.replace(/_/g, " ");
-            li.appendChild(label);
-            
-            this.#list.appendChild(li);
+            this.#list.appendChild(icon.addElement);
         }
         return true;
     }

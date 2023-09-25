@@ -18,7 +18,9 @@
 .card[data-action]:hover {
     box-shadow: none;
 }
+
 main > .card {
+    flex-direction: column;
     padding: calc(var(--main-padding) * 2);
 }
 .card h2 {
@@ -36,19 +38,22 @@ main > .card {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: var(--main-gap);
+    gap: calc(var(--main-gap) / 2);
     list-style: none;
-    margin: var(--main-gap) 0 0 0;
+    margin: 0;
     padding: 0;
 }
-.icons li {
+.icons:empty {
+    display: none;
+}
+.icon {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100px;
-    width: 100px;
+    height: 90px;
+    width: 90px;
     padding: calc(var(--main-gap) / 2);
     padding-bottom: 0;
     gap: calc(var(--main-gap) / 2);
@@ -58,13 +63,14 @@ main > .card {
     overflow: hidden;
     transition: all 300ms ease;
 }
-.icons li:hover {
+.icon.selected,
+.icon:hover {
     background-color: var(--light-color);
 }
-.icons li span:first-child {
+.icon span:first-child {
     font-size: 48px;
 }
-.icons li span:last-child {
+.icon span:last-child {
     height: 30px;
     font-size: 12px;
 }
@@ -72,18 +78,18 @@ main > .card {
 
 
 /**
- * Results
+ * Empty
  */
-.results-empty {
+.empty {
     display: none;
     text-align: center;
 }
-.results-empty p {
+.empty p {
     margin: 0;
 }
-.results-empty p:first-child {
+.empty p:first-child {
     font-size: 80px;
 }
-.results-empty p:last-child {
+.empty p:last-child {
     margin-top: 12px;
 }

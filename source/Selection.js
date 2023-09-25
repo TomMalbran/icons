@@ -28,15 +28,15 @@ export default class Selection {
      */
     constructor() {
         // Selection
-        this.#selectDialog = new Dialog("select");
+        this.#selectDialog = new Dialog("select-project");
         this.#selectEmpty  = document.querySelector(".select-empty");
         this.#selectList   = document.querySelector(".select-list");
 
         // Add/Edit
-        this.#editDialog   = new Dialog("edit");
+        this.#editDialog   = new Dialog("edit-project");
 
         // Delete
-        this.#deleteDialog = new Dialog("delete");
+        this.#deleteDialog = new Dialog("delete-project");
     }
 
     /**
@@ -69,15 +69,15 @@ export default class Selection {
 
             const editBtn = document.createElement("button");
             editBtn.innerHTML       = "Edit";
-            editBtn.className       = "btn";
-            editBtn.dataset.action  = "open-edit";
+            editBtn.className       = "btn btn-small";
+            editBtn.dataset.action  = "open-edit-project";
             editBtn.dataset.project = project.projectID;
             buttons.appendChild(editBtn);
 
             const deleteBtn = document.createElement("button");
             deleteBtn.innerHTML       = "Delete";
-            deleteBtn.className       = "btn";
-            deleteBtn.dataset.action  = "open-delete";
+            deleteBtn.className       = "btn btn-small";
+            deleteBtn.dataset.action  = "open-delete-project";
             deleteBtn.dataset.project = project.projectID;
             buttons.appendChild(deleteBtn);
 

@@ -48,9 +48,9 @@ dialog > .close {
 
 
 /**
- * Select Dialog
+ * Select Project Dialog
  */
-.select-dialog dialog {
+.select-project dialog {
     width: 500px;
 }
 .select-list {
@@ -87,4 +87,13 @@ dialog > .close {
 }
 .select-list .selected {
     background-color: var(--lighter-color);
+}
+
+
+
+/**
+ * Edit Icon Dialog
+ */
+.edit-icon .icon {
+    margin: 0 auto;
 }

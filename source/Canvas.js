@@ -11,8 +11,16 @@ export default class Canvas {
     #body;
     /** @type {HTMLElement} */
     #main;
+
     /** @type {HTMLElement} */
     #title;
+    /** @type {HTMLElement} */
+    #icons;
+    /** @type {HTMLElement} */
+    #empty;
+    /** @type {HTMLElement} */
+    #list;
+
     /** @type {HTMLElement} */
     #light;
     /** @type {HTMLElement} */
@@ -25,7 +33,12 @@ export default class Canvas {
     constructor() {
         this.#body  = document.querySelector("body");
         this.#main  = document.querySelector("main");
+        
         this.#title = document.querySelector("header h1");
+        this.#icons = document.querySelector(".mine");
+        this.#empty = document.querySelector(".mine .empty");
+        this.#list  = document.querySelector(".mine .icons");
+        
         this.#light = document.querySelector(".light");
         this.#dark  = document.querySelector(".dark");
     }
@@ -38,6 +51,20 @@ export default class Canvas {
     setProject(project) {
         this.#main.style.display = "flex";
         this.#title.innerHTML = project.name;
+        this.showIcons(project.icons);
+    }
+
+    /**
+     * Shows the Icons
+     * @param {Icons[]}
+     */
+    showIcons(icons) {
+        this.#empty.style.display = icons.length ? "none" : "block";
+        this.#list.innerHTML = "";
+
+        for (const icon of icons) {
+            this.#list.append(icon.editElement);
+        }
     }
 
 

@@ -1,3 +1,8 @@
+import Project from "./Project.js";
+import Icon    from "./Icon.js";
+
+
+
 /**
  * The Storage
  */
@@ -18,12 +23,33 @@ export default class Storage {
     }
 
     /**
+     * Returns the Next ID
+     * @returns {Number}
+     */
+    get nextID() {
+        const nextID = this.#nextID;
+        this.#nextID += 1;
+        this.setNumber("nextID", this.#nextID);
+        return nextID;
+    }
+
+    /** 
+     * Returns the Key
+     * @param {(String|Number)[]} keys
+     * @returns {String}
+     */
+    getKey(keys) {
+        return "icons-" + keys.join("-");
+    }
+
+    /**
      * Returns true if there is an item
      * @param {...(String|Number)} keys
      * @returns {Boolean}
      */
     hasItem(...keys) {
-        return !!localStorage.getItem(keys.join("-"));
+        const key = this.getKey(keys);
+        return !!localStorage.getItem(key);
     }
 
     /**
@@ -32,7 +58,8 @@ export default class Storage {
      * @returns {String}
      */
     getString(...keys) {
-        return localStorage.getItem(keys.join("-")) || "";
+        const key = this.getKey(keys);
+        return localStorage.getItem(key) || "";
     }
 
     /**
@@ -42,7 +69,8 @@ export default class Storage {
      */
     setString(...items) {
         const value = items.pop();
-        localStorage.setItem(items.join("-"), value);
+        const key   = this.getKey(items);
+        localStorage.setItem(key, value);
     }
 
     /**
@@ -52,7 +80,8 @@ export default class Storage {
      */
     getNumber(...items) {
         const defValue = items.pop();
-        return Number(localStorage.getItem(items.join("-"))) || defValue;
+        const key      = this.getKey(items);
+        return Number(localStorage.getItem(key)) || defValue;
     }
 
     /**
@@ -62,7 +91,8 @@ export default class Storage {
      */
     setNumber(...items) {
         const value = items.pop();
-        localStorage.setItem(items.join("-"), String(value));
+        const key   = this.getKey(items);
+        localStorage.setItem(key, String(value));
     }
 
     /**
@@ -71,7 +101,8 @@ export default class Storage {
      * @returns {?Object}
      */
     getData(...keys) {
-        const data = localStorage.getItem(keys.join("-"));
+        const key  = this.getKey(keys);
+        const data = localStorage.getItem(key);
         return data ? JSON.parse(data) : null;
     }
 
@@ -82,7 +113,8 @@ export default class Storage {
      */
     setData(...items) {
         const value = items.pop();
-        localStorage.setItem(items.join("-"), JSON.stringify(value));
+        const key   = this.getKey(items);
+        localStorage.setItem(key, JSON.stringify(value));
     }
 
     /**
@@ -91,7 +123,8 @@ export default class Storage {
      * @returns {Void}
      */
     removeItem(...keys) {
-        localStorage.removeItem(keys.join("-"));
+        const key = this.getKey(keys);
+        localStorage.removeItem(key);
     }
 
 
@@ -128,7 +161,7 @@ export default class Storage {
     /**
      * Returns the Project
      * @param {Number=} projectID
-     * @returns {Object}
+     * @returns {Project}
      */
     getProject(projectID = this.#currentID) {
         const position = this.#projects.findIndex((id) => id === projectID) + 1;
@@ -136,8 +169,9 @@ export default class Storage {
             return null;
         }
 
-        const name = this.getString(projectID, "name");
-        return { projectID, name, position };
+        const name  = this.getString(projectID, "name");
+        const icons = this.getIcons(projectID);
+        return new Project(projectID, name, position, icons);
     }
 
 
@@ -155,16 +189,14 @@ export default class Storage {
     /**
      * Saves the Project
      * @param {Object} data
-     * @returns {Promise}
+     * @returns {Void}
      */
-    async setProject(data) {
+    setProject(data) {
         const isEdit = Boolean(data.projectID);
 
         // Update the next ID if this is a new Project
         if (!isEdit) {
-            data.projectID = this.#nextID;
-            this.#nextID += 1;
-            this.setNumber("nextID", this.#nextID);
+            data.projectID = this.nextID;
         }
 
         // Save the Project data
@@ -202,6 +234,51 @@ export default class Storage {
         if (this.#currentID === projectID) {
             this.setNumber("currentID", 0);
         }
+    }
+
+
+
+    /**
+     * Returns the Icon IDs
+     * @param {Number=} projectID
+     * @returns {Number[]}
+     */
+    getIconIDs(projectID = this.#currentID) {
+        const icons = this.getData(projectID, "icons");
+        return icons || [];
+    }
+
+    /**
+     * Returns the stored Icons
+     * @param {Number=} projectID
+     * @returns {Object.<Number, Icon>}
+     */
+    getIcons(projectID = this.#currentID) {
+        const iconIDs = this.getIconIDs(projectID);
+        const result  = [];
+        for (const iconID of iconIDs) {
+            const icon = this.getData(projectID, "icon", iconID);
+            result[icon.id] = new Icon(icon.icon, icon.category, icon.tags, icon.id, icon.name);
+        }
+        return result;
+    }
+
+    /**
+     * Sets the Icon
+     * @param {Icon} icon
+     * @returns {Void}
+     */
+    setIcon(icon) {
+        const isEdit = Boolean(icon.id);
+
+        if (!icon.id) {
+            icon.id = this.nextID;
+            const icons = this.getIconIDs();
+            icons.push(icon.id);
+            this.setData(this.#currentID, "icons", icons);
+        }
+        
+        this.setData(this.#currentID, "icon", icon.id, icon.data);
     }
 
 

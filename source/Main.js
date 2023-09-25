@@ -2,6 +2,7 @@ import Selection from "./Selection.js";
 import Storage   from "./Storage.js";
 import Canvas    from "./Canvas.js";
 import Search    from "./Search.js";
+import Icons     from "./Icons.js";
 import Project   from "./Project.js";
 import Utils     from "./Utils.js";
 
@@ -18,6 +19,9 @@ let canvas    = null;
 /** @type {Search} */
 let search    = null;
 
+/** @type {Icons} */
+let icons     = null;
+
 /** @type {Project} */
 let project   = null;
 
@@ -32,24 +36,15 @@ function main() {
     storage   = new Storage();
     canvas    = new Canvas();
     search    = new Search();
+    icons     = new Icons();
 
     canvas.restoreMode(storage.getMode());
     if (storage.hasProject) {
-        const data = storage.getProject();
-        setProject(data);
+        project = storage.getProject();
+        canvas.setProject(project);
     } else {
         selection.open(storage.getProjects(), false);
     }
-}
-
-/**
- * Creates the Project and restores the State
- * @param {Object} data
- * @returns {Void}
- */
-function setProject(data) {
-    project = new Project(data);
-    canvas.setProject(project);
 }
 
 /**
@@ -58,15 +53,17 @@ function setProject(data) {
  * @returns {Boolean}
  */
 function selectProject(projectID) {
-    const data = storage.getProject(projectID);
-    if (!data) {
+    const newProject = storage.getProject(projectID);
+    if (!newProject) {
         return false;
     }
     if (project) {
         // TODO: Remove project
     }
+
+    project = newProject;
     storage.selectProject(projectID);
-    setProject(data);
+    canvas.setProject(newProject);
     return true;
 }
 
@@ -95,9 +92,24 @@ function deleteProject(projectID) {
     if (project && project.projectID === projectID) {
         // TODO: Remove project
     }
+
     storage.removeProject(projectID);
     selection.open(storage.getProjects(), storage.hasProject);
     selection.closeDelete();
+}
+
+/**
+ * Edits/Adds an Icon
+ * @returns {Void}
+ */
+function editIcon() {
+    const icon = icons.editIcon(project);
+    if (icon) {
+        storage.setIcon(icon);
+        project.setIcon(icon);
+        canvas.showIcons(project.icons);
+        icons.closeEdit();
+    }
 }
 
 
@@ -107,16 +119,18 @@ function deleteProject(projectID) {
  */
 document.addEventListener("click", (e) => {
     const target    = Utils.getTarget(e);
-    const action    = target.dataset.action;
-    const projectID = Number(target.dataset.project);
+    const dataset   = target.dataset;
+    const action    = dataset.action;
+    const projectID = Number(dataset.project);
+    const icon      = dataset.icon;
     let   dontStop  = false;
     
     switch (action) {
     // Selection Actions
-    case "open-select":
+    case "open-select-project":
         selection.open(storage.getProjects(), storage.hasProject);
         break;
-    case "close-select":
+    case "close-select-project":
         selection.close();
         break;
     case "select-project":
@@ -125,10 +139,10 @@ document.addEventListener("click", (e) => {
         break;
 
     // Schema Actions
-    case "open-add":
+    case "open-add-project":
         selection.openEdit({});
         break;
-    case "open-edit":
+    case "open-edit-project":
         const projectData = storage.getProject(projectID);
         if (projectData) {
             selection.openEdit(projectData);
@@ -143,13 +157,13 @@ document.addEventListener("click", (e) => {
     case "edit-project":
         editProject();
         break;
-    case "close-edit":
+    case "close-edit-project":
         selection.closeEdit();
         break;
-    case "open-delete":
+    case "open-delete-project":
         selection.openDelete(projectID);
         break;
-    case "close-delete":
+    case "close-delete-project":
         selection.closeDelete();
         break;
     case "delete-project":
@@ -162,6 +176,20 @@ document.addEventListener("click", (e) => {
         break;
     case "clear-search":
         search.clear();
+        break;
+
+    // Icons
+    case "open-add-icon":
+        const iconData = search.getIcon(icon);
+        if (iconData) {
+            icons.openAdd(iconData);            
+        }
+        break;
+    case "edit-icon":
+        editIcon();
+        break;
+    case "close-edit-icon":
+        icons.closeEdit();
         break;
 
     // Light-Dark Modes

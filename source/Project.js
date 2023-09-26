@@ -42,6 +42,14 @@ export default class Project {
     }
 
     /**
+     * Returns the Icon keys
+     * @returns {String[]}
+     */
+    get iconKeys() {
+        return Object.values(this.#icons).map((icon) => icon.icon);
+    }
+
+    /**
      * Returns true if there is an Icon with the given name
      * @param {String} name
      * @param {Number=} skipID
@@ -63,5 +71,19 @@ export default class Project {
      */
     setIcon(icon) {
         this.#icons[icon.id] = icon;
+    }
+
+    /**
+     * Returns an array with the filtered Icons
+     * @returns {Icon[]}
+     */
+    filterIcons(text) {
+        const result = [];
+        for (const icon of this.icons) {
+            if (!text || icon.includes(text)) {
+                result.push(icon);
+            }
+        }
+        return result;
     }
 }

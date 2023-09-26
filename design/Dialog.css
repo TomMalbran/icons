@@ -14,7 +14,7 @@
 dialog {
     box-sizing: border-box;
     position: absolute;
-    top: 50%;
+    top: calc(50% + 40px);
     left: 50%;
     width: 400px;
     max-width: calc(100% - 24px);

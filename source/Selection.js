@@ -70,7 +70,7 @@ export default class Selection {
         for (const project of projects) {
             const li = document.createElement("li");
             li.dataset.action  = "select-project";
-            li.dataset.project = project.id;
+            li.dataset.project = String(project.id);
             if (project.isSelected) {
                 li.className = "selected";
             }
@@ -87,14 +87,14 @@ export default class Selection {
             editBtn.innerHTML       = "Edit";
             editBtn.className       = "btn btn-small";
             editBtn.dataset.action  = "open-edit-project";
-            editBtn.dataset.project = project.id;
+            editBtn.dataset.project = String(project.id);
             buttons.appendChild(editBtn);
 
             const deleteBtn = document.createElement("button");
             deleteBtn.innerHTML       = "Delete";
             deleteBtn.className       = "btn btn-small";
             deleteBtn.dataset.action  = "open-delete-project";
-            deleteBtn.dataset.project = project.id;
+            deleteBtn.dataset.project = String(project.id);
             buttons.appendChild(deleteBtn);
 
             this.#selectList?.appendChild(li);

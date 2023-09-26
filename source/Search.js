@@ -1,4 +1,5 @@
-import Icon from "./Icon.js";
+import Icon  from "./Icon.js";
+import Utils from "./Utils.js";
 
 
 
@@ -8,7 +9,8 @@ import Icon from "./Icon.js";
 export default class Search {
 
     #withTags = true;
-
+    #text     = "";
+ 
     /** @type {Object.<String, Icon>} */
     #data = {};
 
@@ -36,11 +38,11 @@ export default class Search {
     }
 
     /**
-     * Returns the Input value
+     * Returns the Text
      * @returns {String}
      */
     get text() {
-        return this.#input?.value || "";
+        return this.#text;
     }
 
     /**
@@ -53,17 +55,18 @@ export default class Search {
 
     /**
      * Searches new Icons
+     * @param {String[]} iconKeys
      * @returns {Promise}
      */
-    async search() {
-        const text = this.text;
-        if (!text) {
+    async search(iconKeys) {
+        this.#text = (this.#input?.value || "").toLowerCase();
+        if (!this.#text) {
             return;
         }
         if (!this.#data.length) {
             await this.fetchData();
         }
-        const icons = this.findIcons(text);
+        const icons = this.findIcons(iconKeys);
         this.showIcons(icons);
     }
 
@@ -95,15 +98,13 @@ export default class Search {
 
     /**
      * Finds the icons
-     * @param {String} text
+     * @param {String[]} iconKeys
      * @returns {Icon[]}
      */
-    findIcons(text) {
-        const search = text.toLowerCase();
+    findIcons(iconKeys) {
         const result = [];
-
         for (const icon of Object.values(this.#data)) {
-            if (icon.includes(search)) {
+            if (!iconKeys.includes(icon.icon) && icon.includes(this.#text)) {
                 result.push(icon);
             }
         }
@@ -140,10 +141,26 @@ export default class Search {
     }
 
     /**
+     * Removes the given Icon
+     * @param {Icon} icon
+     * @returns {Void}
+     */
+    removeIcon(icon) {
+        if (!this.#text || !this.#list) {
+            return;
+        }
+        const element = this.#list.querySelector(`[data-icon=${icon.icon}]`);
+        if (element) {
+            Utils.removeElement(element);
+        }
+    }
+
+    /**
      * Clears the Search
      * @returns {Void}
      */
     clear() {
+        this.#text = "";
         if (this.#input) {
             this.#input.value = "";
         }

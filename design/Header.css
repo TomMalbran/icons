@@ -92,6 +92,9 @@ header .card {
         grid-area: search;
         z-index: 1;
     }
+    .search.hidden {
+        display: none;
+    }
     .actions {
         grid-area: actions;
     }

@@ -36,19 +36,31 @@ function main() {
 /**
  * Selects the given Project
  * @param {Number} projectID
- * @returns {Boolean}
+ * @returns {Void}
  */
 function selectProject(projectID) {
     const newProject = storage.getProject(projectID);
     if (!newProject) {
-        return false;
+        return;
     }
 
     project = newProject;
     storage.selectProject(projectID);
-    canvas.setProject(newProject);
     search.clear();
-    return true;
+    canvas.setProject(project);
+}
+
+/**
+ * Shows the Icons
+ * @returns {Void}
+ */
+function showIcons() {
+    if (!project) {
+        return;
+    }
+
+    const icons = project.filterIcons(search.text);
+    canvas.showIcons(icons, search.text);
 }
 
 /**
@@ -66,6 +78,7 @@ async function editProject() {
     if (project && project.id === newProject.id) {
         canvas.setProject(newProject);
     }
+    project = newProject;
     selection.closeEdit();
 }
 
@@ -101,8 +114,18 @@ function editIcon() {
 
     storage.setIcon(icon);
     project.setIcon(icon);
-    canvas.showIcons(project.icons);
+    search.removeIcon(icon);
+    showIcons();
     icons.closeEdit();
+}
+
+/**
+ * Searches the Icons
+ * @returns {Void}
+ */
+function searchIcons() {
+    search.search(project.iconKeys);
+    showIcons();
 }
 
 
@@ -165,17 +188,18 @@ document.addEventListener("click", (e) => {
 
     // Search
     case "search-icon":
-        search.search();
+        searchIcons();
         break;
     case "clear-search":
         search.clear();
+        showIcons();
         break;
 
     // Icons
     case "open-add-icon":
-        const iconData = search.getIcon(icon);
-        if (iconData) {
-            icons.openAdd(iconData);
+        const newIcon = search.getIcon(icon);
+        if (newIcon) {
+            icons.openAdd(newIcon);
         }
         break;
     case "edit-icon":
@@ -206,7 +230,7 @@ document.addEventListener("click", (e) => {
  */
 document.querySelector(".search input")?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        search.search();
+        searchIcons();
     }
 });
 

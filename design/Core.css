@@ -3,7 +3,7 @@
  */
 :root {
     --disabled-color: rgb(94, 109, 120);
-    
+
     --main-font: Lato, "Helvetica Nueue", Helvetica, Arial, sans-serif;
     --title-font: Means, Georgia, serif;
 
@@ -34,7 +34,7 @@ body {
     --input-color: rgb(189, 189, 189);
     --lighter-color: rgba(132, 139, 200, 0.09);
     --light-color: rgba(132, 139, 200, 0.18);
-    --dark-color: rgba(132, 139, 200, 0.24);   
+    --dark-color: rgba(132, 139, 200, 0.24);
     --border-color: rgba(132, 139, 200, 0.18);
 }
 .dark-mode {

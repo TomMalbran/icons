@@ -12,6 +12,9 @@ export default class Selection {
     #selectDialog;
 
     /** @type {?HTMLElement} */
+    #search;
+
+    /** @type {?HTMLElement} */
     #selectEmpty;
 
     /** @type {?HTMLElement} */
@@ -38,6 +41,7 @@ export default class Selection {
     constructor() {
         // Selection
         this.#selectDialog = new Dialog("select-project");
+        this.#search       = document.querySelector(".search");
         this.#selectEmpty  = document.querySelector(".select-empty");
         this.#selectList   = document.querySelector(".select-list");
 
@@ -55,9 +59,7 @@ export default class Selection {
      * @returns {Void}
      */
     open(projects, hasProject) {
-        this.#selectDialog.open();
-        this.#selectDialog.toggleClose(hasProject);
-
+        this.#search?.classList.add("hidden");
         if (this.#selectEmpty) {
             this.#selectEmpty.style.display = projects.length ? "none" : "block";
         }
@@ -97,6 +99,9 @@ export default class Selection {
 
             this.#selectList?.appendChild(li);
         }
+
+        this.#selectDialog.toggleClose(hasProject);
+        this.#selectDialog.open();
     }
 
     /**
@@ -105,7 +110,8 @@ export default class Selection {
      */
     close() {
         this.#selectDialog.close();
-    }
+        this.#search?.classList.remove("hidden");
+   }
 
 
 

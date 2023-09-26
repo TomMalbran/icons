@@ -224,6 +224,13 @@ export default class Storage {
 
         this.removeItem(projectID, "name");
 
+        // Remove the icons
+        const iconIDs = this.getIconIDs(projectID);
+        for (const iconID of iconIDs) {
+            this.removeItem(projectID, "icon", iconID);
+        }
+        this.removeItem(projectID, "icons");
+
         // Save the order
         this.#projects = this.#projects.filter((id) => id !== projectID);
         this.setData("projects", this.#projects);

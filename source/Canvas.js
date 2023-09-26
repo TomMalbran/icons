@@ -76,6 +76,22 @@ export default class Canvas {
         }
     }
 
+    /**
+     * Clears the Project
+     * @returns {Void}
+     */
+    clearProject() {
+        if (this.#title) {
+            this.#title.innerHTML = "Icons";
+        }
+        if (this.#list) {
+            this.#list.innerHTML = "";
+        }
+        if (this.#main) {
+            this.#main.style.display = "none";
+        }
+    }
+
 
 
     /**

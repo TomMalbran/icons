@@ -76,7 +76,9 @@ async function editProject() {
  */
 function deleteProject(projectID) {
     if (project && project.id === projectID) {
-        // TODO: Remove project
+        search.clear();
+        canvas.clearProject();
+        project = null;
     }
 
     storage.removeProject(projectID);

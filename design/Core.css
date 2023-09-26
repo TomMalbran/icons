@@ -12,10 +12,12 @@
     --border-radius: 24px;
     --input-radius: 4px;
 
-    --actions-width: calc(var(--main-padding) * 3 + 32px * 3);
+    --actions-width: calc(var(--main-padding) + 32px * 2);
 
     --z-dialog: 100;
+    --z-header: 110;
 }
+
 body {
     --box-shadow: 0 28px 44px var(--light-color);
 }
@@ -81,27 +83,19 @@ body {
  * Main Styles
  */
 html, body {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
     border: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     background-color: var(--background-color);
 }
 body, input, dialog {
     color: var(--main-color);
     font-size: 14px;
     font-family: var(--main-font);
-}
-main {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--main-gap) * 2);
-    height: 100%;
-    padding: calc(var(--main-padding) * 2);
-    overflow: auto;
 }
 svg {
     fill: var(--main-color);
@@ -447,15 +441,4 @@ input[role="switch"]:disabled {
 .close:hover:after,
 .close:active:after {
     transform: rotate(-35deg);
-}
-
-
-
-/**
- * Media queries
- */
-@media (max-width: 600px) {
-    main {
-        padding: var(--main-padding);
-    }
 }

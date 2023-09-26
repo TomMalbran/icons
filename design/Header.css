@@ -2,9 +2,20 @@
  * The header
  */
 header {
+    position: sticky;
+    top: 0;
     display: flex;
     gap: var(--main-gap);
+    row-gap: calc(var(--main-gap) / 2);
+    padding: calc(var(--main-padding) * 2);
+    background: linear-gradient(to top, transparent 0, var(--background-color) var(--main-padding));
+    z-index: var(--z-header);
 }
+header .card {
+    gap: 0;
+    padding: calc(var(--main-padding) / 2);
+}
+
 .title.title {
     display: flex;
     align-items: center;
@@ -19,14 +30,18 @@ header {
 }
 
 
+
 /**
  * The search
  */
-.search {
+.search.search {
     flex-grow: 2;
     align-items: center;
-    gap: 0;
-    padding-left: calc(2 * var(--main-padding));
+    padding-left: calc(var(--main-padding) * 2);
+}
+.search.hidden {
+    opacity: 0.2;
+    pointer-events: none;
 }
 .search input[type="text"] {
     flex-grow: 2;
@@ -45,35 +60,10 @@ header {
 
 
 /**
- * The actions
+ * The light dark
  */
-.actions {
-    width: var(--actions-width);
-    align-items: center;
-    gap: calc(var(--main-gap) / 2);
-}
-
 .light-dark {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-    gap: 6px;
-    background-color: var(--light-color);
-    border-radius: 9999px;
-    transition: all 300ms ease;
-}
-.light-dark:hover {
-    background-color: var(--dark-color);
-}
-.light-dark > div {
-    display: flex;    
-    align-items: center;
-    justify-content: center;
-    height: 28px;
-    width: 28px;
-    border-radius: 50%;
-    cursor: pointer;
+    width: var(--actions-width);
 }
 .light-dark .selected {
     background-color: var(--black-color);
@@ -92,6 +82,7 @@ header {
         display: grid;
         grid-template-columns: 1fr var(--actions-width);
         grid-template-areas: "title actions" "search search";
+        padding: var(--main-padding);
     }
     .title {
         grid-area: title;

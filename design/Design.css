@@ -1,4 +1,25 @@
 /**
+ * Main
+ */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--main-gap) * 2);
+    padding: calc(var(--main-padding) * 2);
+}
+main > .card {
+    flex-direction: column;
+    padding: calc(var(--main-padding) * 2);
+}
+main h2 {
+    margin: 0;
+    font-family: var(--title-font);
+    font-size: 24px;
+}
+
+
+
+/**
  * Cards
  */
 .card {
@@ -10,23 +31,13 @@
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     font-size: 16px;
-    transition: all 300ms ease;
 }
 .card[data-action] {
     cursor: pointer;
+    transition: all 300ms ease;
 }
 .card[data-action]:hover {
     box-shadow: none;
-}
-
-main > .card {
-    flex-direction: column;
-    padding: calc(var(--main-padding) * 2);
-}
-.card h2 {
-    margin: 0;
-    font-family: var(--title-font);
-    font-size: 24px;
 }
 
 
@@ -92,4 +103,15 @@ main > .card {
 }
 .empty p:last-child {
     margin-top: 12px;
+}
+
+
+
+/**
+ * Media queries
+ */
+@media (max-width: 600px) {
+    main {
+        padding: var(--main-padding);
+    }
 }

@@ -6,33 +6,33 @@ import Icon from "./Icon.js";
  * The Search
  */
 export default class Search {
-    
+
     #withTags = true;
 
     /** @type {Object.<String, Icon>} */
     #data = {};
-    
-    /** @type {HTMLInputElement} */
+
+    /** @type {?HTMLInputElement} */
     #input;
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #results;
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #list;
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #empty;
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #clear;
 
-    
+
     /**
      * Search constructor
      */
-    constructor() {        
+    constructor() {
         this.#input   = document.querySelector(".search input");
         this.#results = document.querySelector(".results");
         this.#list    = document.querySelector(".results .icons");
         this.#empty   = document.querySelector(".results .empty");
-        this.#clear   = document.querySelector(".clear-search");        
+        this.#clear   = document.querySelector(".clear-search");
     }
 
     /**
@@ -40,7 +40,7 @@ export default class Search {
      * @returns {String}
      */
     get text() {
-        return this.#input.value;
+        return this.#input?.value || "";
     }
 
     /**
@@ -78,9 +78,9 @@ export default class Search {
             const result   = await response.json();
             for (const icon of result) {
                 if (!this.#data[icon.name]) {
-                    this.#data[icon.name] = new Icon(icon.name, icon.category, icon.tags);                   
+                    this.#data[icon.name] = new Icon(icon.name, icon.category, icon.tags);
                 }
-            }        
+            }
         } else {
             const response = await fetch("https://raw.githubusercontent.com/google/material-design-icons/master/update/current_versions.json");
             const result   = await response.json();
@@ -93,7 +93,7 @@ export default class Search {
         }
     }
 
-    /** 
+    /**
      * Finds the icons
      * @param {String} text
      * @returns {Icon[]}
@@ -116,18 +116,25 @@ export default class Search {
      * @returns {Boolean}
      */
     showIcons(icons) {
-        this.#results.style.display = "flex";
-        this.#clear.style.display = "flex";
-        this.#empty.style.display = "none";
-        this.#list.innerHTML = "";
-
-        if (!icons.length) {
-            this.#empty.style.display = "block";
-            return false;
+        if (this.#results) {
+            this.#results.style.display = "flex";
         }
-        
-        for (const icon of icons) {
-            this.#list.appendChild(icon.addElement);
+        if (this.#clear) {
+            this.#clear.style.display = "flex";
+        }
+        if (this.#empty) {
+            this.#empty.style.display = "none";
+        }
+
+        if (this.#list && this.#empty) {
+            this.#list.innerHTML = "";
+            if (!icons.length) {
+                this.#empty.style.display = "block";
+                return false;
+            }
+            for (const icon of icons) {
+                this.#list.appendChild(icon.addElement);
+            }
         }
         return true;
     }
@@ -137,8 +144,14 @@ export default class Search {
      * @returns {Void}
      */
     clear() {
-        this.#input.value = "";
-        this.#results.style.display = "none";
-        this.#clear.style.display = "none";
+        if (this.#input) {
+            this.#input.value = "";
+        }
+        if (this.#results) {
+            this.#results.style.display = "none";
+        }
+        if (this.#clear) {
+            this.#clear.style.display = "none";
+        }
     }
 }

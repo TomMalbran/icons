@@ -179,7 +179,7 @@ function getMousePos(event, withScroll = true) {
  */
 function unselect() {
     if (window.getSelection) {
-        window.getSelection().removeAllRanges();
+        window.getSelection()?.removeAllRanges();
     // @ts-ignore
     } else if (document.selection) {
         // @ts-ignore

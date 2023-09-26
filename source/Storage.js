@@ -139,7 +139,7 @@ export default class Storage {
 
     /**
      * Returns a list of Projects
-     * @returns {Object[]}
+     * @returns {Project[]}
      */
     getProjects() {
         const result = [];
@@ -148,12 +148,9 @@ export default class Storage {
         }
         
         for (const [ index, projectID ] of this.#projects.entries()) {
-            const name = this.getString(projectID, "name");
-            result.push({
-                projectID, name,
-                position   : index + 1,
-                isSelected : projectID === this.#currentID,
-            });
+            const name       = this.getString(projectID, "name");
+            const isSelected = projectID === this.#currentID;
+            result.push(new Project(projectID, name, index + 1, isSelected));
         }
         return result;
     }
@@ -161,7 +158,7 @@ export default class Storage {
     /**
      * Returns the Project
      * @param {Number=} projectID
-     * @returns {Project}
+     * @returns {?Project}
      */
     getProject(projectID = this.#currentID) {
         const position = this.#projects.findIndex((id) => id === projectID) + 1;
@@ -169,9 +166,10 @@ export default class Storage {
             return null;
         }
 
-        const name  = this.getString(projectID, "name");
-        const icons = this.getIcons(projectID);
-        return new Project(projectID, name, position, icons);
+        const name       = this.getString(projectID, "name");
+        const icons      = this.getIcons(projectID);
+        const isSelected = projectID === this.#currentID;
+        return new Project(projectID, name, position, isSelected, icons);
     }
 
 

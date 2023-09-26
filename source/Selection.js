@@ -1,4 +1,5 @@
-import Dialog from "./Dialog.js";
+import Dialog  from "./Dialog.js";
+import Project from "./Project.js";
 
 
 
@@ -10,10 +11,10 @@ export default class Selection {
     /** @type {Dialog} */
     #selectDialog;
 
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #selectEmpty;
 
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #selectList;
 
     /** @type {Dialog} */
@@ -22,7 +23,15 @@ export default class Selection {
     /** @type {Dialog} */
     #deleteDialog;
 
-    
+    /** @type {Project} */
+    #project;
+
+    projectID = 0;
+    #file;
+    #path;
+    #icons;
+
+
     /**
      * Selection constructor
      */
@@ -41,20 +50,25 @@ export default class Selection {
 
     /**
      * Opens the Select Dialog
-     * @param {Object[]} projects
-     * @param {Boolean}  hasProject
+     * @param {Project[]} projects
+     * @param {Boolean}   hasProject
      * @returns {Void}
      */
     open(projects, hasProject) {
         this.#selectDialog.open();
         this.#selectDialog.toggleClose(hasProject);
-        this.#selectEmpty.style.display = projects.length ? "none" : "block";
-        this.#selectList.innerHTML = "";
+
+        if (this.#selectEmpty) {
+            this.#selectEmpty.style.display = projects.length ? "none" : "block";
+        }
+        if (this.#selectList) {
+            this.#selectList.innerHTML = "";
+        }
 
         for (const project of projects) {
             const li = document.createElement("li");
             li.dataset.action  = "select-project";
-            li.dataset.project = project.projectID;
+            li.dataset.project = project.id;
             if (project.isSelected) {
                 li.className = "selected";
             }
@@ -71,17 +85,17 @@ export default class Selection {
             editBtn.innerHTML       = "Edit";
             editBtn.className       = "btn btn-small";
             editBtn.dataset.action  = "open-edit-project";
-            editBtn.dataset.project = project.projectID;
+            editBtn.dataset.project = project.id;
             buttons.appendChild(editBtn);
 
             const deleteBtn = document.createElement("button");
             deleteBtn.innerHTML       = "Delete";
             deleteBtn.className       = "btn btn-small";
             deleteBtn.dataset.action  = "open-delete-project";
-            deleteBtn.dataset.project = project.projectID;
+            deleteBtn.dataset.project = project.id;
             buttons.appendChild(deleteBtn);
 
-            this.#selectList.appendChild(li);
+            this.#selectList?.appendChild(li);
         }
     }
 
@@ -96,22 +110,37 @@ export default class Selection {
 
 
     /**
-     * Opens the Edit Dialog
-     * @param {Object} data
+     * Opens the Add Dialog
      * @returns {Void}
      */
-    openEdit(data) {
-        const isEdit = Boolean(data.projectID);
-        this.data    = data;
-        this.file    = null;
-        this.path    = "";
+    openAdd() {
+        this.file = null;
+        this.path = "";
 
         this.#editDialog.open();
-        this.#editDialog.setTitle(isEdit  ? "Edit the Project" : "Add a Project");
-        this.#editDialog.setButton(isEdit ? "Edit" : "Add");
+        this.#editDialog.setTitle("Add a Project");
+        this.#editDialog.setButton("Add");
 
-        this.#editDialog.setInput("name",     isEdit ? data.name     : "");
-        this.#editDialog.setInput("position", isEdit ? data.position : "0");
+        this.#editDialog.setInput("name", "");
+        this.#editDialog.setInput("position", "0");
+    }
+
+    /**
+     * Opens the Edit Dialog
+     * @param {Project} project
+     * @returns {Void}
+     */
+    openEdit(project) {
+        this.#project = project;
+        this.#file = null;
+        this.#path = "";
+
+        this.#editDialog.open();
+        this.#editDialog.setTitle("Edit the Project");
+        this.#editDialog.setButton("Edit");
+
+        this.#editDialog.setInput("name", project.name);
+        this.#editDialog.setInput("position", project.position);
     }
 
     /**
@@ -128,8 +157,8 @@ export default class Selection {
      */
     selectFile() {
         this.#editDialog.selectFile("file", (file) => {
-            this.file = file;
-            this.path = file.name;
+            this.#file = file;
+            this.#path = file.name;
         });
     }
 
@@ -140,22 +169,22 @@ export default class Selection {
     removeFile() {
         this.files = null;
         this.path  = "";
-        this.data.icons = null;
+        this.icons = null;
         this.#editDialog.setInput("name", "");
     }
 
     /**
      * Edits/Create a Project
-     * @returns {Promise}
+     * @returns {Promise.<?Project>}
      */
     editProject() {
         return new Promise((resolve) => {
-            this.data.name     = this.#editDialog.getInput("name");
-            this.data.position = this.#editDialog.getInput("position");
-            this.data.icons    = {};
+            const name     = this.#editDialog.getString("name");
+            const position = this.#editDialog.getNumber("position");
+            let   icons    = {};
 
             this.#editDialog.hideErrors();
-            if (!this.data.name) {
+            if (!name) {
                 this.#editDialog.showError("name");
             }
             if (this.file) {
@@ -164,7 +193,7 @@ export default class Selection {
                 reader.onload = () => {
                     const text = String(reader.result);
                     try {
-                        this.data.icons = JSON.parse(text);
+                        icons = JSON.parse(text);
                     } catch {
                         this.#editDialog.showError("json");
                     }
@@ -172,10 +201,17 @@ export default class Selection {
             }
 
             if (this.#editDialog.hasError) {
-                resolve();
+                resolve(null);
                 return;
             }
-            resolve(this.data);
+
+            if (this.#project) {
+                this.#project.name     = name;
+                this.#project.position = position;
+                resolve(this.#project);
+            } else {
+                resolve(new Project(0, name, position, false, icons));
+            }
         });
     }
 

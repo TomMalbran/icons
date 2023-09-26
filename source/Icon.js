@@ -12,14 +12,14 @@ export default class Icon {
     id       = 0;
     #name    = "";
 
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #editElement;
 
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #addElement;
 
 
-    
+
     /**
      * Creates an Icon
      * @param {String}    icon
@@ -96,7 +96,10 @@ export default class Icon {
     set name(name) {
         this.#name = name;
         if (this.#editElement) {
-            this.#editElement.querySelector(".icon-label").innerHTML = this.title;
+            const label = this.#editElement.querySelector(".icon-label");
+            if (label) {
+                label.innerHTML = this.title;
+            }
         }
     }
 
@@ -135,7 +138,7 @@ export default class Icon {
     createElement(isAdd) {
         const li = document.createElement("li");
         li.dataset.action = isAdd ? "open-add-icon" : "open-edit-icon";
-        li.dataset.icon   = isAdd ? this.icon : this.id;
+        li.dataset.icon   = String(isAdd ? this.icon : this.id);
         li.className      = "icon";
 
         const item = document.createElement("span");

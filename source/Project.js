@@ -7,27 +7,30 @@ import Icon from "./Icon.js";
  */
 export default class Project {
 
-    projectID = 0;
-    name      = "";
-    position  = 0;
+    id         = 0;
+    name       = "";
+    position   = 0;
+    isSelected = false;
 
     /** @type {Object.<Number, Icon>} */
-    #icons    = {};
+    #icons     = {};
 
     
 
     /**
      * The Project constructor
-     * @param {Number}                 projectID
+     * @param {Number}                 id
      * @param {String}                 name
      * @param {Number}                 position
+     * @param {Boolean}                isSelected
      * @param {Object.<Number, Icon>=} icons
      */
-    constructor(projectID, name, position, icons = {}) {
-        this.projectID = projectID;
-        this.name      = name;
-        this.position  = position;
-        this.#icons    = icons;
+    constructor(id, name, position, isSelected, icons = {}) {
+        this.id         = id;
+        this.name       = name;
+        this.position   = position;
+        this.isSelected = isSelected;
+        this.#icons     = icons;
     }
 
     /**
@@ -55,7 +58,7 @@ export default class Project {
 
     /**
      * Sets an Icon
-     * @param {Icon}
+     * @param {Icon} icon
      * @returns {Void}
      */
     setIcon(icon) {

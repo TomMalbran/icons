@@ -1,4 +1,5 @@
 import Project from "./Project.js";
+import Icon    from "./Icon.js";
 
 
 
@@ -7,38 +8,38 @@ import Project from "./Project.js";
  */
 export default class Canvas {
 
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #body;
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #main;
 
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #title;
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #icons;
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #empty;
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #list;
 
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #light;
-    /** @type {HTMLElement} */
+    /** @type {?HTMLElement} */
     #dark;
 
-    
+
     /**
      * Canvas constructor
      */
     constructor() {
         this.#body  = document.querySelector("body");
         this.#main  = document.querySelector("main");
-        
+
         this.#title = document.querySelector("header h1");
         this.#icons = document.querySelector(".mine");
         this.#empty = document.querySelector(".mine .empty");
         this.#list  = document.querySelector(".mine .icons");
-        
+
         this.#light = document.querySelector(".light");
         this.#dark  = document.querySelector(".dark");
     }
@@ -49,21 +50,29 @@ export default class Canvas {
      * @returns {Void}
      */
     setProject(project) {
-        this.#main.style.display = "flex";
-        this.#title.innerHTML = project.name;
+        if (this.#main) {
+            this.#main.style.display = "flex";
+        }
+        if (this.#title) {
+            this.#title.innerHTML = project.name;
+        }
         this.showIcons(project.icons);
     }
 
     /**
      * Shows the Icons
-     * @param {Icons[]}
+     * @param {Icon[]} icons
+     * @returns {Void}
      */
     showIcons(icons) {
-        this.#empty.style.display = icons.length ? "none" : "block";
-        this.#list.innerHTML = "";
-
-        for (const icon of icons) {
-            this.#list.append(icon.editElement);
+        if (this.#empty) {
+            this.#empty.style.display = icons.length ? "none" : "block";
+        }
+        if (this.#list) {
+            this.#list.innerHTML = "";
+            for (const icon of icons) {
+                this.#list?.append(icon.editElement);
+            }
         }
     }
 
@@ -81,16 +90,16 @@ export default class Canvas {
             this.setDarkMode();
         }
     }
-    
+
     /**
      * Sets the Light Mode
      * @returns {Void}
      */
     setLightMode() {
-        this.#body.classList.add("light-mode");
-        this.#body.classList.remove("dark-mode");
-        this.#light.classList.add("selected");
-        this.#dark.classList.remove("selected");
+        this.#body?.classList.add("light-mode");
+        this.#body?.classList.remove("dark-mode");
+        this.#light?.classList.add("selected");
+        this.#dark?.classList.remove("selected");
     }
 
     /**
@@ -98,9 +107,9 @@ export default class Canvas {
      * @returns {Void}
      */
     setDarkMode() {
-        this.#body.classList.remove("light-mode");
-        this.#body.classList.add("dark-mode");
-        this.#light.classList.remove("selected");
-        this.#dark.classList.add("selected");
+        this.#body?.classList.remove("light-mode");
+        this.#body?.classList.add("dark-mode");
+        this.#light?.classList.remove("selected");
+        this.#dark?.classList.add("selected");
     }
 }

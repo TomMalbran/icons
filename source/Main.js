@@ -7,22 +7,14 @@ import Project   from "./Project.js";
 import Utils     from "./Utils.js";
 
 
-/** @type {Selection} */
-let selection = null;
+// The variables
+let selection = new Selection();
+let storage   = new Storage();
+let canvas    = new Canvas();
+let search    = new Search();
+let icons     = new Icons();
 
-/** @type {Storage} */
-let storage   = null;
-
-/** @type {Canvas} */
-let canvas    = null;
-
-/** @type {Search} */
-let search    = null;
-
-/** @type {Icons} */
-let icons     = null;
-
-/** @type {Project} */
+/** @type {?Project} */
 let project   = null;
 
 
@@ -32,15 +24,9 @@ let project   = null;
  * @returns {Void}
  */
 function main() {
-    selection = new Selection();
-    storage   = new Storage();
-    canvas    = new Canvas();
-    search    = new Search();
-    icons     = new Icons();
-
     canvas.restoreMode(storage.getMode());
-    if (storage.hasProject) {
-        project = storage.getProject();
+    project = storage.getProject();
+    if (project) {
         canvas.setProject(project);
     } else {
         selection.open(storage.getProjects(), false);
@@ -57,30 +43,30 @@ function selectProject(projectID) {
     if (!newProject) {
         return false;
     }
-    if (project) {
-        // TODO: Remove project
-    }
 
     project = newProject;
     storage.selectProject(projectID);
     canvas.setProject(newProject);
+    search.clear();
     return true;
 }
 
-/** 
- * Edits/Creats a Project
+/**
+ * Edits/Creates a Project
  * @returns {Promise}
  */
 async function editProject() {
-    const data = await selection.editProject();
-    if (data) {
-        storage.setProject(data);
-        selection.open(storage.getProjects(), storage.hasProject);
-        if (project && data && project.projectID === data.projectID) {
-            selectProject(data.projectID);
-        }
-        selection.closeEdit();
+    const newProject = await selection.editProject();
+    if (!newProject) {
+        return;
     }
+
+    storage.setProject(newProject);
+    selection.open(storage.getProjects(), storage.hasProject);
+    if (project && project.id === newProject.id) {
+        canvas.setProject(newProject);
+    }
+    selection.closeEdit();
 }
 
 /**
@@ -89,7 +75,7 @@ async function editProject() {
  * @returns {Void}
  */
 function deleteProject(projectID) {
-    if (project && project.projectID === projectID) {
+    if (project && project.id === projectID) {
         // TODO: Remove project
     }
 
@@ -103,13 +89,18 @@ function deleteProject(projectID) {
  * @returns {Void}
  */
 function editIcon() {
-    const icon = icons.editIcon(project);
-    if (icon) {
-        storage.setIcon(icon);
-        project.setIcon(icon);
-        canvas.showIcons(project.icons);
-        icons.closeEdit();
+    if (!project) {
+        return;
     }
+    const icon = icons.editIcon(project);
+    if (!icon) {
+        return;
+    }
+
+    storage.setIcon(icon);
+    project.setIcon(icon);
+    canvas.showIcons(project.icons);
+    icons.closeEdit();
 }
 
 
@@ -124,7 +115,7 @@ document.addEventListener("click", (e) => {
     const projectID = Number(dataset.project);
     const icon      = dataset.icon;
     let   dontStop  = false;
-    
+
     switch (action) {
     // Selection Actions
     case "open-select-project":
@@ -140,12 +131,12 @@ document.addEventListener("click", (e) => {
 
     // Schema Actions
     case "open-add-project":
-        selection.openEdit({});
+        selection.openAdd();
         break;
     case "open-edit-project":
-        const projectData = storage.getProject(projectID);
-        if (projectData) {
-            selection.openEdit(projectData);
+        const newProject = storage.getProject(projectID);
+        if (newProject) {
+            selection.openEdit(newProject);
         }
         break;
     case "upload-file":
@@ -182,7 +173,7 @@ document.addEventListener("click", (e) => {
     case "open-add-icon":
         const iconData = search.getIcon(icon);
         if (iconData) {
-            icons.openAdd(iconData);            
+            icons.openAdd(iconData);
         }
         break;
     case "edit-icon":
@@ -211,7 +202,7 @@ document.addEventListener("click", (e) => {
 /**
  * The Search Event Handler
  */
-document.querySelector(".search input").addEventListener("keydown", (e) => {
+document.querySelector(".search input")?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         search.search();
     }

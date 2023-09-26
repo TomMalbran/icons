@@ -1,4 +1,6 @@
-import Dialog from "./Dialog.js";
+import Dialog  from "./Dialog.js";
+import Project from "./Project.js";
+import Icon    from "./Icon.js";
 
 
 
@@ -13,10 +15,10 @@ export default class Icons {
     /** @type {Dialog} */
     #deleteDialog;
 
-    /** @type {Icon} */
+    /** @type {?Icon} */
     #icon;
 
-    
+
     /**
      * Selection constructor
      */
@@ -65,9 +67,9 @@ export default class Icons {
         }
 
         this.#editDialog.hideErrors();
-        const name = this.#editDialog.getInput("name");
+        const name = this.#editDialog.getString("name");
         if (!name) {
-            this.#editDialog.showError("enpty");
+            this.#editDialog.showError("empty");
         } else if (!name.match(/^[a-z]+[a-z-]*[a-z]+$/)) {
             this.#editDialog.showError("invalid");
         } else if (project.hasIcon(name)) {

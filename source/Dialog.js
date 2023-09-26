@@ -5,11 +5,11 @@ export default class Dialog {
 
     #isOpen   = false;
     #hasError = false;
-    
-    /** @type {HTMLElement} */
+
+    /** @type {?HTMLElement} */
     #container;
 
-    
+
     /**
      * The Dialog constructor
      * @param {String} name
@@ -35,17 +35,20 @@ export default class Dialog {
     }
 
 
-    
+
     /**
      * Opens the Dialog
      * @returns {Void}
      */
     open() {
+        if (!this.#container) {
+            return;
+        }
         this.#isOpen = true;
         this.#container.style.display = "block";
         this.hideErrors();
 
-        /** @type {HTMLInputElement} */
+        /** @type {?HTMLInputElement} */
         const input = this.#container.querySelector("[data-field=name] input");
         if (input) {
             input.focus();
@@ -57,6 +60,9 @@ export default class Dialog {
      * @returns {Void}
      */
     close() {
+        if (!this.#container) {
+            return;
+        }
         this.#isOpen = false;
         this.#container.style.display = "none";
         this.hideErrors();
@@ -70,7 +76,8 @@ export default class Dialog {
      * @returns {Void}
      */
     toggleClose(show) {
-        const element = this.#container.querySelector(".close");
+        /** @type {?HTMLElement=} */
+        const element = this.#container?.querySelector(".close");
         if (!element) {
             return;
         }
@@ -80,14 +87,15 @@ export default class Dialog {
             element.style.display = "none";
         }
     }
-    
+
     /**
      * Set the Dialog title
      * @param {String} text
      * @returns {Void}
      */
     setTitle(text) {
-        const element = this.#container.querySelector("h2");
+        /** @type {?HTMLElement=} */
+        const element = this.#container?.querySelector("h2");
         if (element) {
             element.innerHTML = text;
         }
@@ -98,12 +106,14 @@ export default class Dialog {
      * @param {String} selector
      * @param {String} content
      * @returns {Void}
-     */ 
+     */
     setContent(selector, content) {
         if (!selector) {
             return;
         }
-        const element = this.#container.querySelector(selector);
+
+        /** @type {?HTMLElement=} */
+        const element = this.#container?.querySelector(selector);
         if (element) {
             element.innerHTML = content;
         }
@@ -115,11 +125,14 @@ export default class Dialog {
      * @returns {Void}
      */
     setButton(text) {
-        const element = this.#container.querySelector(".dialog-btn");
+        /** @type {?HTMLElement=} */
+        const element = this.#container?.querySelector(".dialog-btn");
         if (element) {
             element.innerHTML = text;
         }
     }
+
+
 
     /**
      * Returns the Input value
@@ -127,12 +140,33 @@ export default class Dialog {
      * @returns {(Boolean|String)}
      */
     getInput(name) {
-        /** @type {HTMLInputElement} */
-        const input = this.#container.querySelector(`[data-field=${name}] input`);
+        /** @type {?HTMLInputElement=} */
+        const input = this.#container?.querySelector(`[data-field=${name}] input`);
+        if (!input) {
+            return "";
+        }
         if (input.type === "checkbox") {
             return input.checked;
         }
         return input.value;
+    }
+
+    /**
+     * Returns the Input value as a String
+     * @param {String} name
+     * @returns {String}
+     */
+    getString(name) {
+        return String(this.getInput(name));
+    }
+
+    /**
+     * Returns the Input value as a Number
+     * @param {String} name
+     * @returns {Number}
+     */
+    getNumber(name) {
+        return Number(this.getInput(name));
     }
 
     /**
@@ -142,16 +176,25 @@ export default class Dialog {
      * @returns {Void}
      */
     setInput(name, value) {
-        const element = this.#container.querySelector(`[data-field=${name}]`);
+        /** @type {?HTMLElement=} */
+        const element = this.#container?.querySelector(`[data-field=${name}]`);
         if (!element) {
             return;
         }
+
         if (element.classList.contains("file-input")) {
             const name = element.querySelector(".file-name");
-            name.innerHTML = value;
+            if (name) {
+                name.innerHTML = value;
+            }
             return;
         }
+
+        /** @type {?HTMLInputElement=} */
         const input = element.querySelector("input");
+        if (!input) {
+            return;
+        }
         if (input.type === "checkbox") {
             input.checked = Boolean(value);
             return;
@@ -170,9 +213,11 @@ export default class Dialog {
         input.type     = "file";
         input.accept   = ".json";
         input.onchange = () => {
-            const file = input.files[0];
-            this.setInput(name, file.name);
-            onSelect(file);
+            if (input.files) {
+                const file = input.files[0];
+                this.setInput(name, file.name);
+                onSelect(file);
+            }
         };
         input.click();
     }
@@ -183,11 +228,11 @@ export default class Dialog {
      * @param {String=} message
      * @returns {Void}
      */
-    showError(error, message = null) {
+    showError(error, message = "") {
         this.#hasError = true;
 
-        /** @type {HTMLElement} */
-        const element = this.#container.querySelector(`[data-error=${error}]`);
+        /** @type {?HTMLElement=} */
+        const element = this.#container?.querySelector(`[data-error=${error}]`);
         if (element) {
             element.style.display = "block";
             if (message) {
@@ -202,10 +247,13 @@ export default class Dialog {
      */
     hideErrors() {
         this.#hasError = false;
-        const errors = this.#container.querySelectorAll(".error");
-        // @ts-ignore
-        for (const error of errors) {
-            error.style.display = "none";
+
+        /** @type {?NodeListOf<HTMLElement>=} */
+        const errors = this.#container?.querySelectorAll(".error");
+        if (errors) {
+            for (const error of errors) {
+                error.style.display = "none";
+            }
         }
     }
 }

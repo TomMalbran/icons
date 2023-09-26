@@ -26,30 +26,30 @@ body {
     --black-color: black;
     --white-color: white;
     --main-color: rgb(14, 16, 18);
-    --label-color: rgb(118, 130, 139);
-    --background-color: #f6f6f9;
+    --background-color: rgb(246, 246, 249);
+    --backdrop-color: rgba(246, 246, 249, 0.6);
     --card-color: white;
+    --label-color: rgb(118, 130, 139);
     --button-color: rgb(14, 16, 18);
     --input-color: rgb(189, 189, 189);
     --lighter-color: rgba(132, 139, 200, 0.09);
     --light-color: rgba(132, 139, 200, 0.18);
-    --dark-color: rgba(132, 139, 200, 0.24);
-    --backdrop-color: rgba(232, 232, 237, 0.8);
+    --dark-color: rgba(132, 139, 200, 0.24);   
     --border-color: rgba(132, 139, 200, 0.18);
 }
 .dark-mode {
     --black-color: white;
     --white-color: black;
     --main-color: rgb(237, 239, 253);
-    --label-color: rgba(227, 229, 243);
-    --background-color: #181a1e;
-    --card-color: #202528;
+    --background-color: rgb(24, 26, 30);
+    --backdrop-color: rgba(24, 26, 30, 0.8);
+    --card-color: rgb(32, 37, 40);
+    --label-color: rgb(227, 229, 243);
     --button-color: rgb(14, 16, 18);
     --input-color: rgb(0, 0, 0, 0.8);
     --lighter-color: rgba(0, 0, 0, 0.2);
     --light-color: rgba(0, 0, 0, 0.3);
     --dark-color: rgba(0, 0, 0, 0.2);
-    --backdrop-color: rgba(0, 0, 0, 0.8);
     --border-color: rgba(0, 0, 0, 0.4);
 }
 

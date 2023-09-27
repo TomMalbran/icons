@@ -31,6 +31,14 @@ export default class Icons {
     }
 
     /**
+     * Returns the Icon
+     * @returns {Icon}
+     */
+    get icon() {
+        return this.#icon;
+    }
+
+    /**
      * Opens the Edit Dialog to Add
      * @param {Icon} icon
      * @returns {Void}
@@ -41,10 +49,29 @@ export default class Icons {
         this.#editDialog.open();
         this.#editDialog.setTitle("Add an Icon");
         this.#editDialog.setButton("Add");
+        this.#editDialog.toggleButton("delete", false);
 
-        this.#editDialog.setContent(".icon-icon", icon.icon);
+        this.#editDialog.setContent(".icon-icon", icon.key);
         this.#editDialog.setContent(".icon-name", icon.title);
-        this.#editDialog.setInput("name", icon.icon);
+        this.#editDialog.setInput("name", icon.key);
+    }
+
+    /**
+     * Opens the Edit Dialog to Edit
+     * @param {Icon} icon
+     * @returns {Void}
+     */
+    openEdit(icon) {
+        this.#icon = icon;
+
+        this.#editDialog.open();
+        this.#editDialog.setTitle("Edit an Icon");
+        this.#editDialog.setButton("Edit");
+        this.#editDialog.toggleButton("delete", true);
+
+        this.#editDialog.setContent(".icon-icon", icon.key);
+        this.#editDialog.setContent(".icon-name", icon.name);
+        this.#editDialog.setInput("name", icon.name);
     }
 
     /**
@@ -81,5 +108,24 @@ export default class Icons {
 
         this.#icon.name = name;
         return this.#icon;
+    }
+
+
+
+    /**
+     * Opens the Delete Dialog
+     * @returns {Void}
+     */
+    openDelete() {
+        this.#deleteDialog.open();
+    }
+
+    /**
+     * Closes the Delete and Edit Dialogs
+     * @returns {Void}
+     */
+    closeDelete() {
+        this.#editDialog.close();
+        this.#deleteDialog.close();
     }
 }

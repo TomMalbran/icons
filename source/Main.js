@@ -78,6 +78,7 @@ async function editProject() {
     if (project && project.id === newProject.id) {
         canvas.setProject(newProject);
     }
+
     project = newProject;
     selection.closeEdit();
 }
@@ -120,6 +121,26 @@ function editIcon() {
 }
 
 /**
+ * Deletes an Icon
+ * @returns {Void}
+ */
+function deleteIcon() {
+    if (!project) {
+        return;
+    }
+    const icon = icons.icon;
+    if (!icon) {
+        return;
+    }
+
+    storage.removeIcon(icon);
+    project.removeIcon(icon);
+    search.addIcon(icon);
+    showIcons();
+    icons.closeDelete();
+}
+
+/**
  * Searches the Icons
  * @returns {Void}
  */
@@ -139,6 +160,7 @@ document.addEventListener("click", (e) => {
     const action    = dataset.action;
     const projectID = Number(dataset.project);
     const icon      = dataset.icon;
+    const iconID    = Number(icon);
     let   dontStop  = false;
 
     switch (action) {
@@ -159,9 +181,9 @@ document.addEventListener("click", (e) => {
         selection.openAdd();
         break;
     case "open-edit-project":
-        const newProject = storage.getProject(projectID);
-        if (newProject) {
-            selection.openEdit(newProject);
+        const projectToEdit = storage.getProject(projectID);
+        if (projectToEdit) {
+            selection.openEdit(projectToEdit);
         }
         break;
     case "upload-file":
@@ -197,9 +219,15 @@ document.addEventListener("click", (e) => {
 
     // Icons
     case "open-add-icon":
-        const newIcon = search.getIcon(icon);
-        if (newIcon) {
-            icons.openAdd(newIcon);
+        const iconToAdd = search.getIcon(icon);
+        if (iconToAdd) {
+            icons.openAdd(iconToAdd);
+        }
+        break;
+    case "open-edit-icon":
+        const iconToEdit = project.getIcon(iconID);
+        if (iconToEdit) {
+            icons.openEdit(iconToEdit);
         }
         break;
     case "edit-icon":
@@ -207,6 +235,15 @@ document.addEventListener("click", (e) => {
         break;
     case "close-edit-icon":
         icons.closeEdit();
+        break;
+    case "open-delete-icon":
+        icons.openDelete();
+        break;
+    case "delete-icon":
+        deleteIcon();
+        break;
+    case "close-delete-icon":
+        icons.closeDelete();
         break;
 
     // Light-Dark Modes

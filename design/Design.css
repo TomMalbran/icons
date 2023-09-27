@@ -14,6 +14,7 @@ main > .card {
 main h2 {
     margin: 0;
     font-family: var(--title-font);
+    font-weight: normal;
     font-size: 24px;
 }
 
@@ -65,9 +66,8 @@ main h2 {
     justify-content: center;
     height: 90px;
     width: 90px;
-    padding: calc(var(--main-gap) / 2);
-    padding-bottom: 0;
-    gap: calc(var(--main-gap) / 2);
+    padding: 6px;
+    gap: 0;
     border-radius: var(--border-radius);
     text-align: center;
     cursor: pointer;
@@ -78,10 +78,14 @@ main h2 {
 .icon:hover {
     background-color: var(--light-color);
 }
+
 .icon span:first-child {
     font-size: 48px;
 }
-.icon span:last-child {
+.icon-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 30px;
     font-size: 12px;
 }

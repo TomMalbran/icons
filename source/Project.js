@@ -46,7 +46,7 @@ export default class Project {
      * @returns {String[]}
      */
     get iconKeys() {
-        return Object.values(this.#icons).map((icon) => icon.icon);
+        return Object.values(this.#icons).map((icon) => icon.key);
     }
 
     /**
@@ -65,12 +65,30 @@ export default class Project {
     }
 
     /**
+     * Gets an Icon
+     * @param {Number} iconID
+     * @returns {?Icon}
+     */
+    getIcon(iconID) {
+        return this.#icons[iconID] ?? null;
+    }
+
+    /**
      * Sets an Icon
      * @param {Icon} icon
      * @returns {Void}
      */
     setIcon(icon) {
         this.#icons[icon.id] = icon;
+    }
+
+    /**
+     * Removes an Icon
+     * @param {Icon} icon
+     * @returns {Void}
+     */
+    removeIcon(icon) {
+        delete this.#icons[icon.id];
     }
 
     /**

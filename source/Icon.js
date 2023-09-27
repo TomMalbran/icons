@@ -4,7 +4,7 @@
 export default class Icon {
 
     // New Icon
-    icon     = "";
+    key      = "";
     category = "";
     tags     = [];
 
@@ -22,14 +22,14 @@ export default class Icon {
 
     /**
      * Creates an Icon
-     * @param {String}    icon
+     * @param {String}    key
      * @param {String}    category
      * @param {String[]=} tags
      * @param {Number=}   id
      * @param {String=}   name
      */
-    constructor(icon, category, tags = [], id = 0, name = "") {
-        this.icon     = icon;
+    constructor(key, category, tags = [], id = 0, name = "") {
+        this.key      = key;
         this.category = category;
         this.tags     = tags;
         this.id       = id;
@@ -43,8 +43,8 @@ export default class Icon {
     get data() {
         return {
             id       : this.id,
+            key      : this.key,
             name     : this.#name,
-            icon     : this.icon,
             category : this.category,
             tags     : this.tags,
         };
@@ -63,7 +63,7 @@ export default class Icon {
      * @returns {String}
      */
     get title() {
-        return this.getTitle(this.#name || this.icon);
+        return this.getTitle(this.#name || this.key);
     }
 
     /**
@@ -118,7 +118,7 @@ export default class Icon {
                 }
             }
         }
-        return this.icon.includes(text);
+        return this.key.includes(text);
     }
 
     /**
@@ -127,7 +127,7 @@ export default class Icon {
      * @returns {String}
      */
     getTitle(text) {
-        return text.replace(/_-/g, " ");
+        return text.replace(/_/g, " ");
     }
 
     /**
@@ -138,17 +138,17 @@ export default class Icon {
     createElement(isAdd) {
         const li = document.createElement("li");
         li.dataset.action = isAdd ? "open-add-icon" : "open-edit-icon";
-        li.dataset.icon   = String(isAdd ? this.icon : this.id);
+        li.dataset.icon   = String(isAdd ? this.key : this.id);
         li.className      = "icon";
 
         const item = document.createElement("span");
         item.className = "material-symbols-outlined";
-        item.innerHTML = this.icon;
+        item.innerHTML = this.key;
         li.appendChild(item);
 
         const label = document.createElement("span");
         label.className = "icon-label";
-        label.innerHTML = this.getTitle(isAdd ? this.icon : this.#name);
+        label.innerHTML = this.getTitle(isAdd ? this.key : this.#name);
         li.appendChild(label);
 
         return li;

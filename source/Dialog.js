@@ -78,13 +78,8 @@ export default class Dialog {
     toggleClose(show) {
         /** @type {?HTMLElement=} */
         const element = this.#container?.querySelector(".close");
-        if (!element) {
-            return;
-        }
-        if (show) {
-            element.style.display = "block";
-        } else {
-            element.style.display = "none";
+        if (element) {
+            element.style.display = show ? "block" : "none";
         }
     }
 
@@ -129,6 +124,24 @@ export default class Dialog {
         const element = this.#container?.querySelector(".dialog-btn");
         if (element) {
             element.innerHTML = text;
+        }
+    }
+
+    /**
+     * Toggles a Dialog button
+     * @param {String}  selector
+     * @param {Boolean} show
+     * @returns {Void}
+     */
+    toggleButton(selector, show) {
+        if (!selector) {
+            return;
+        }
+
+        /** @type {?HTMLElement=} */
+        const element = this.#container?.querySelector(`.${selector}-btn`);
+        if (element) {
+            element.style.display = show ? "inline-block" : "none";
         }
     }
 

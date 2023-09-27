@@ -186,27 +186,27 @@ export default class Storage {
 
     /**
      * Saves the Project
-     * @param {Object} data
+     * @param {Project} project
      * @returns {Void}
      */
-    setProject(data) {
-        const isEdit = Boolean(data.projectID);
+    setProject(project) {
+        const isEdit = Boolean(project.id);
 
         // Update the next ID if this is a new Project
         if (!isEdit) {
-            data.projectID = this.nextID;
+            project.id = this.nextID;
         }
 
         // Save the Project data
-        this.setString(data.projectID, "name", data.name);
+        this.setString(project.id, "name", project.name);
 
         // Save the order
-        const index = Math.min(Math.max(data.position - 1, 0), this.#projects.length);
+        const index = Math.min(Math.max(project.position - 1, 0), this.#projects.length);
         if (!isEdit) {
-            this.#projects.push(data.projectID);
-        } else if (this.#projects[index] !== data.projectID) {
-            this.#projects = this.#projects.filter((id) => id !== data.projectID);
-            this.#projects.splice(index, 0, data.projectID);
+            this.#projects.push(project.id);
+        } else if (this.#projects[index] !== project.id) {
+            this.#projects = this.#projects.filter((id) => id !== project.id);
+            this.#projects.splice(index, 0, project.id);
         }
         this.setData("projects", this.#projects);
     }
@@ -263,7 +263,7 @@ export default class Storage {
         const result  = [];
         for (const iconID of iconIDs) {
             const icon = this.getData(projectID, "icon", iconID);
-            result[icon.id] = new Icon(icon.icon, icon.category, icon.tags, icon.id, icon.name);
+            result[icon.id] = new Icon(icon.key, icon.category, icon.tags, icon.id, icon.name);
         }
         return result;
     }
@@ -274,16 +274,27 @@ export default class Storage {
      * @returns {Void}
      */
     setIcon(icon) {
-        const isEdit = Boolean(icon.id);
-
         if (!icon.id) {
             icon.id = this.nextID;
-            const icons = this.getIconIDs();
-            icons.push(icon.id);
-            this.setData(this.#currentID, "icons", icons);
+            const iconIDs = this.getIconIDs();
+            iconIDs.push(icon.id);
+            this.setData(this.#currentID, "icons", iconIDs);
         }
         
         this.setData(this.#currentID, "icon", icon.id, icon.data);
+    }
+
+    /**
+     * Removes the Icon
+     * @param {Icon} icon
+     * @returns {Void}
+     */ 
+    removeIcon(icon) {
+        let iconIDs = this.getIconIDs();
+        iconIDs = iconIDs.filter((id) => id !== icon.id);
+        this.setData(this.#currentID, "icons", iconIDs);
+        
+        this.removeItem(this.#currentID, "icon", icon.id);
     }
 
 

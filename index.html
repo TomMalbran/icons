@@ -84,7 +84,7 @@
                 </dialog>
             </div>
     
-            <div class="backdrop" data-dialog="edit-project" style="display:none">
+            <div class="backdrop important" data-dialog="edit-project" style="display:none">
                 <dialog open>
                     <h2>Edit Project</h2>
                     <p>Name the Project and optionally import the icons from a json file.</p>
@@ -116,7 +116,7 @@
                 </dialog>
             </div>
     
-            <div class="backdrop" data-dialog="delete-project" style="display:none">
+            <div class="backdrop important" data-dialog="delete-project" style="display:none">
                 <dialog open>
                     <h2>Delete Project</h2>
                     <p class="select-empty">Do you really want to delete the selected Project?</p>
@@ -126,7 +126,7 @@
                 </dialog>
             </div>
 
-            <div class="edit-icon backdrop" data-dialog="edit-icon" style="display:none">
+            <div class="edit-icon backdrop important" data-dialog="edit-icon" style="display:none">
                 <dialog open>
                     <h2>Add icon</h2>
                     <div class="icon selected">
@@ -142,8 +142,19 @@
                         <div class="error" data-error="repeated">There is another icon with the given name.</div>
                     </div>
                     <button class="btn btn-fill dialog-btn" data-action="edit-icon"></button>
+                    <button class="btn btn-fill delete-btn" data-action="open-delete-icon">Delete</button>
                     <button class="btn" data-action="close-edit-icon">Cancel</button>
                     <a href="#" class="close" data-action="close-edit-icon"></a>
+                </dialog>
+            </div>
+
+            <div class="backdrop important" data-dialog="delete-icon" style="display:none">
+                <dialog open>
+                    <h2>Delete Icon</h2>
+                    <p class="select-empty">Do you really want to delete the selected Icon?</p>
+                    <button class="btn btn-fill" data-action="delete-icon">Delete</button>
+                    <button class="btn" data-action="close-delete-icon">Cancel</button>
+                    <a href="#" class="close" data-action="close-delete-icon"></a>
                 </dialog>
             </div>
         </section>

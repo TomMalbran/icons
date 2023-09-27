@@ -104,7 +104,7 @@ export default class Search {
     findIcons(iconKeys) {
         const result = [];
         for (const icon of Object.values(this.#data)) {
-            if (!iconKeys.includes(icon.icon) && icon.includes(this.#text)) {
+            if (!iconKeys.includes(icon.key) && icon.includes(this.#text)) {
                 result.push(icon);
             }
         }
@@ -141,6 +141,32 @@ export default class Search {
     }
 
     /**
+     * Adds the given Icon
+     * @param {Icon} icon
+     * @returns {Void}
+     */
+    addIcon(icon) {
+        if (!this.#text || !this.#list) {
+            return;
+        }
+
+        const lis   = this.#list.querySelectorAll("li");
+        let   added = false;
+        for (const li of lis) {
+            const iconKey = li.dataset.icon;
+            const compare = icon.key.localeCompare(iconKey);
+            if (compare < 0) {
+                li.before(icon.addElement);
+                added = true;
+                break;
+            }
+        }
+        if (!added) {
+            this.#list.appendChild(icon.addElement);
+        }
+    }
+
+    /**
      * Removes the given Icon
      * @param {Icon} icon
      * @returns {Void}
@@ -149,7 +175,9 @@ export default class Search {
         if (!this.#text || !this.#list) {
             return;
         }
-        const element = this.#list.querySelector(`[data-icon=${icon.icon}]`);
+
+        /** @type {?HTMLElement} */
+        const element = this.#list.querySelector(`[data-icon=${icon.key}]`);
         if (element) {
             Utils.removeElement(element);
         }

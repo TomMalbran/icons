@@ -11,10 +11,14 @@
     background-color: var(--backdrop-color);
     z-index: var(--z-dialog);
 }
+.backdrop.important {
+    z-index: var(--z-important);
+}
+
 dialog {
     box-sizing: border-box;
     position: absolute;
-    top: calc(50% + 40px);
+    top: 50%;
     left: 50%;
     width: 400px;
     max-width: calc(100% - 24px);
@@ -68,7 +72,7 @@ dialog > .close {
     justify-content: space-between;
     align-items: center;
     counter-increment: counter;
-    padding: 8px 16px;
+    padding: 8px 4px 8px 16px;
     border-bottom: 1px solid var(--border-color);
     text-align: left;
     cursor: pointer;
@@ -82,7 +86,7 @@ dialog > .close {
     content: counter(counter) ".";
     margin-right: 8px;
     font-family: var(--title-font);
-    font-weight: bold;
+    font-weight: normal;
     font-size: 20px;
 }
 .select-list .selected {

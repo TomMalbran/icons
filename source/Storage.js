@@ -8,18 +8,22 @@ import Icon    from "./Icon.js";
  */
 export default class Storage {
 
-    #currentID = 0;
-    #nextID    = 1;
-    #projects  = [];
+    #currentID  = 0;
+    #nextID     = 1;
+
+    /** @type {Number[]} */
+    #projectIDs = [];
+    /** @type {Object.<Number, Project>} */
+    #projects   = {};
 
 
     /**
      * Storage constructor
      */
     constructor() {
-        this.#currentID = this.getNumber("currentID", 0);
-        this.#nextID    = this.getNumber("nextID", 1);
-        this.#projects  = this.getData("projects") || [];
+        this.#currentID  = this.getNumber("currentID", 0);
+        this.#nextID     = this.getNumber("nextID", 1);
+        this.#projectIDs = this.getData("projects") || [];
     }
 
     /**
@@ -33,7 +37,7 @@ export default class Storage {
         return nextID;
     }
 
-    /** 
+    /**
      * Returns the Key
      * @param {(String|Number)[]} keys
      * @returns {String}
@@ -138,19 +142,24 @@ export default class Storage {
     }
 
     /**
+     * Returns the Current Project ID
+     * @returns {Number}
+     */
+    get projectID() {
+        return this.#currentID;
+    }
+
+    /**
      * Returns a list of Projects
      * @returns {Project[]}
      */
-    getProjects() {
+    get projects() {
         const result = [];
-        if (!this.#projects.length) {
-            return result;
-        }
-        
-        for (const [ index, projectID ] of this.#projects.entries()) {
-            const name       = this.getString(projectID, "name");
-            const isSelected = projectID === this.#currentID;
-            result.push(new Project(projectID, name, index + 1, isSelected));
+        for (const projectID of this.#projectIDs) {
+            if (!this.#projects[projectID]) {
+                this.getProject(projectID);
+            }
+            result.push(this.#projects[projectID]);
         }
         return result;
     }
@@ -161,15 +170,19 @@ export default class Storage {
      * @returns {?Project}
      */
     getProject(projectID = this.#currentID) {
-        const position = this.#projects.findIndex((id) => id === projectID) + 1;
+        const position = this.#projectIDs.findIndex((id) => id === projectID) + 1;
         if (position <= 0) {
             return null;
         }
 
-        const name       = this.getString(projectID, "name");
-        const icons      = this.getIcons(projectID);
-        const isSelected = projectID === this.#currentID;
-        return new Project(projectID, name, position, isSelected, icons);
+        if (!this.#projects[projectID]) {
+            const name       = this.getString(projectID, "name");
+            const icons      = this.getIcons(projectID);
+            const isSelected = projectID === this.#currentID;
+            this.#projects[projectID] = new Project(projectID, name, position, isSelected, icons);
+        }
+
+        return this.#projects[projectID];
     }
 
 
@@ -180,6 +193,13 @@ export default class Storage {
      * @returns {Void}
      */
     selectProject(projectID) {
+        if (this.#projects[this.#currentID]) {
+            this.#projects[this.#currentID].isSelected = false;
+        }
+        if (this.#projects[projectID]) {
+            this.#projects[projectID].isSelected = true;
+        }
+
         this.#currentID = projectID;
         this.setNumber("currentID", this.#currentID);
     }
@@ -201,14 +221,14 @@ export default class Storage {
         this.setString(project.id, "name", project.name);
 
         // Save the order
-        const index = Math.min(Math.max(project.position - 1, 0), this.#projects.length);
+        const index = Math.min(Math.max(project.position - 1, 0), this.#projectIDs.length);
         if (!isEdit) {
-            this.#projects.push(project.id);
-        } else if (this.#projects[index] !== project.id) {
-            this.#projects = this.#projects.filter((id) => id !== project.id);
-            this.#projects.splice(index, 0, project.id);
+            this.#projectIDs.push(project.id);
+        } else if (this.#projectIDs[index] !== project.id) {
+            this.#projectIDs = this.#projectIDs.filter((id) => id !== project.id);
+            this.#projectIDs.splice(index, 0, project.id);
         }
-        this.setData("projects", this.#projects);
+        this.setData("projects", this.#projectIDs);
     }
 
     /**
@@ -232,13 +252,15 @@ export default class Storage {
         this.removeItem(projectID, "icons");
 
         // Save the order
-        this.#projects = this.#projects.filter((id) => id !== projectID);
-        this.setData("projects", this.#projects);
+        this.#projectIDs = this.#projectIDs.filter((id) => id !== projectID);
+        this.setData("projects", this.#projectIDs);
 
         // Remove as the current Project
         if (this.#currentID === projectID) {
             this.setNumber("currentID", 0);
         }
+
+        delete this.#projects[projectID];
     }
 
 
@@ -280,7 +302,7 @@ export default class Storage {
             iconIDs.push(icon.id);
             this.setData(this.#currentID, "icons", iconIDs);
         }
-        
+
         this.setData(this.#currentID, "icon", icon.id, icon.data);
     }
 
@@ -288,12 +310,12 @@ export default class Storage {
      * Removes the Icon
      * @param {Icon} icon
      * @returns {Void}
-     */ 
+     */
     removeIcon(icon) {
         let iconIDs = this.getIconIDs();
         iconIDs = iconIDs.filter((id) => id !== icon.id);
         this.setData(this.#currentID, "icons", iconIDs);
-        
+
         this.removeItem(this.#currentID, "icon", icon.id);
     }
 
@@ -306,7 +328,7 @@ export default class Storage {
     getMode() {
         return this.getString("mode") || "light";
     }
-    
+
     /**
      * Sets the Dark Mode
      * @returns {Void}

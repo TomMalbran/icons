@@ -26,7 +26,7 @@ export default class Selection {
     /** @type {Dialog} */
     #deleteDialog;
 
-    /** @type {Project} */
+    /** @type {?Project} */
     #project;
 
     projectID = 0;
@@ -120,8 +120,9 @@ export default class Selection {
      * @returns {Void}
      */
     openAdd() {
-        this.file = null;
-        this.path = "";
+        this.#project = null;
+        this.file     = null;
+        this.path     = "";
 
         this.#editDialog.open();
         this.#editDialog.setTitle("Add a Project");
@@ -138,8 +139,8 @@ export default class Selection {
      */
     openEdit(project) {
         this.#project = project;
-        this.#file = null;
-        this.#path = "";
+        this.#file    = null;
+        this.#path    = "";
 
         this.#editDialog.open();
         this.#editDialog.setTitle("Edit the Project");

@@ -13,9 +13,7 @@ let storage   = new Storage();
 let canvas    = new Canvas();
 let search    = new Search();
 let icons     = new Icons();
-
-/** @type {?Project} */
-let project   = null;
+let project   = new Project();
 
 
 
@@ -25,12 +23,19 @@ let project   = null;
  */
 function main() {
     canvas.restoreMode(storage.getMode());
-    project = storage.getProject();
-    if (project) {
-        canvas.setProject(project);
+    if (storage.hasProject) {
+        selectProject(storage.projectID);
     } else {
-        selection.open(storage.getProjects(), false);
+        openSelection();
     }
+}
+
+/**
+ * Opens the Selection
+ * @returns {Void}
+ */
+function openSelection() {
+    selection.open(storage.projects, storage.hasProject);
 }
 
 /**
@@ -55,10 +60,6 @@ function selectProject(projectID) {
  * @returns {Void}
  */
 function showIcons() {
-    if (!project) {
-        return;
-    }
-
     const icons = project.filterIcons(search.text);
     canvas.showIcons(icons, search.text);
 }
@@ -74,7 +75,7 @@ async function editProject() {
     }
 
     storage.setProject(newProject);
-    selection.open(storage.getProjects(), storage.hasProject);
+    openSelection();
     if (project && project.id === newProject.id) {
         canvas.setProject(newProject);
     }
@@ -92,11 +93,11 @@ function deleteProject(projectID) {
     if (project && project.id === projectID) {
         search.clear();
         canvas.clearProject();
-        project = null;
+        project = new Project();
     }
 
     storage.removeProject(projectID);
-    selection.open(storage.getProjects(), storage.hasProject);
+    openSelection();
     selection.closeDelete();
 }
 
@@ -105,9 +106,6 @@ function deleteProject(projectID) {
  * @returns {Void}
  */
 function editIcon() {
-    if (!project) {
-        return;
-    }
     const icon = icons.editIcon(project);
     if (!icon) {
         return;
@@ -125,9 +123,6 @@ function editIcon() {
  * @returns {Void}
  */
 function deleteIcon() {
-    if (!project) {
-        return;
-    }
     const icon = icons.icon;
     if (!icon) {
         return;
@@ -166,7 +161,7 @@ document.addEventListener("click", (e) => {
     switch (action) {
     // Selection Actions
     case "open-select-project":
-        selection.open(storage.getProjects(), storage.hasProject);
+        openSelection();
         break;
     case "close-select-project":
         selection.close();
@@ -264,12 +259,16 @@ document.addEventListener("click", (e) => {
 
 /**
  * The Search Event Handler
+ * @type {?HTMLInputElement}
  */
-document.querySelector(".search input")?.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        searchIcons();
-    }
-});
+const input = document.querySelector(".search input");
+if (input) {
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            searchIcons();
+        }
+    });
+}
 
 
 

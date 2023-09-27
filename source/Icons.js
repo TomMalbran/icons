@@ -32,7 +32,7 @@ export default class Icons {
 
     /**
      * Returns the Icon
-     * @returns {Icon}
+     * @returns {?Icon}
      */
     get icon() {
         return this.#icon;

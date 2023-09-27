@@ -10,7 +10,7 @@ export default class Search {
 
     #withTags = true;
     #text     = "";
- 
+
     /** @type {Object.<String, Icon>} */
     #data = {};
 
@@ -153,7 +153,7 @@ export default class Search {
         const lis   = this.#list.querySelectorAll("li");
         let   added = false;
         for (const li of lis) {
-            const iconKey = li.dataset.icon;
+            const iconKey = String(li.dataset.icon);
             const compare = icon.key.localeCompare(iconKey);
             if (compare < 0) {
                 li.before(icon.addElement);

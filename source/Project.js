@@ -15,17 +15,17 @@ export default class Project {
     /** @type {Object.<Number, Icon>} */
     #icons     = {};
 
-    
+
 
     /**
      * The Project constructor
-     * @param {Number}                 id
-     * @param {String}                 name
-     * @param {Number}                 position
-     * @param {Boolean}                isSelected
+     * @param {Number=}                id
+     * @param {String=}                name
+     * @param {Number=}                position
+     * @param {Boolean=}               isSelected
      * @param {Object.<Number, Icon>=} icons
      */
-    constructor(id, name, position, isSelected, icons = {}) {
+    constructor(id = 0, name = "", position = 0, isSelected = false, icons = {}) {
         this.id         = id;
         this.name       = name;
         this.position   = position;

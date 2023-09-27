@@ -16,12 +16,17 @@ header .card {
     padding: calc(var(--main-padding) / 2);
 }
 
-.title.title {
+.title {
     display: flex;
     align-items: center;
-    gap: var(--main-gap);
+    gap: calc(var(--main-gap) / 2);
     font-family: var(--title-font);
+    font-weight: normal;
     cursor: pointer;
+    transition: all 300ms;
+}
+.title:hover {
+    opacity: 0.5;
 }
 .title h1 {
     margin: 0;

@@ -65,15 +65,15 @@ header .card {
 
 
 /**
- * The light dark
+ * Mode
  */
-.light-dark {
+.mode {
     width: var(--actions-width);
 }
-.light-dark .selected {
+.mode .selected {
     background-color: var(--black-color);
 }
-.light-dark .selected svg {
+.mode .selected svg {
     fill: var(--white-color);
 }
 

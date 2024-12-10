@@ -4,6 +4,7 @@ import Canvas    from "./Canvas.js";
 import Search    from "./Search.js";
 import Icons     from "./Icons.js";
 import Project   from "./Project.js";
+import Mode      from "./Mode.js";
 import Utils     from "./Utils.js";
 
 
@@ -14,6 +15,7 @@ let canvas    = new Canvas();
 let search    = new Search();
 let icons     = new Icons();
 let project   = new Project();
+let mode      = new Mode();
 
 
 
@@ -22,7 +24,7 @@ let project   = new Project();
  * @returns {Void}
  */
 function main() {
-    canvas.restoreMode(storage.getMode());
+    mode.restore(storage.getMode());
     if (storage.hasProject) {
         selectProject(storage.projectID);
     } else {
@@ -241,14 +243,14 @@ document.addEventListener("click", (e) => {
         icons.closeDelete();
         break;
 
-    // Light-Dark Modes
-    case "light-mode":
+    // Mode Actions
+    case "mode-light":
         storage.setLightMode();
-        canvas.setLightMode();
+        mode.setLight();
         break;
-    case "dark-mode":
+    case "mode-dark":
         storage.setDarkMode();
-        canvas.setDarkMode();
+        mode.setDark();
         break;
     }
 
